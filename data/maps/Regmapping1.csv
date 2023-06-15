@@ -1,0 +1,33 @@
+RegID,region,REG1,REG
+G1,USA,USA,USA
+G2,Africa_Eastern,E.AFR,E. Africa
+G3,Africa_Northern,N.AFR,N. Africa
+G4,Africa_Southern,S.AFR,S. Africa
+G5,Africa_Western,W.AFR,W. Africa
+G6,Australia_NZ,Australia,Australia_NZ
+G7,Brazil,Brazil,Brazil
+G8,Canada,Canada,Canada
+G9,Central America and Caribbean,C.Amer,C. America & Carib.
+G10,Central Asia,C.Asia,C. Asia
+G11,China,China,China
+G12,EU-12,EU12,EU-12
+G13,EU-15,EU15,EU-15
+G14,Europe_Eastern,E.EUP,E. Europe
+G15,Europe_Non_EU,NEU,Europe_Non-EU
+G16,European Free Trade Association,EUP.FTA,Europe_FTA
+G17,India,India,India
+G18,Indonesia,Indonesia,Indonesia
+G19,Japan,Japan,Japan
+G20,Mexico,Mexico,Mexico
+G21,Middle East,M. East,M. East
+G22,Pakistan,Pakistan,Pakistan
+G23,Russia,Russia,Russia
+G24,South Africa,S. Africa,South Africa
+G25,South America_Northern,N.S.Amer.,S. America_N.
+G26,South America_Southern,S.S.Amer.,S. America_S.
+G27,South Asia,S.Asia,S. Asia
+G28,South Korea,S.Korea,South Korea
+G29,Southeast Asia,S.E.Asia,S.E. Asia
+G30,Taiwan,China,Taiwan
+G31,Argentina,Argentina,Argentina
+G32,Colombia,Colombia,Colombia

@@ -1,0 +1,34 @@
+crop,crop1,crop2
+Forest,Forest,Forest
+Grassland,Grassland,Grassland
+OtherArableLand,Other arable land,Other arable land
+Pasture,Pasture,Pasture
+UnmanagedForest,UnmanagedForest,Forest
+UnmanagedPasture,UnmanagedPasture,Pasture
+Shrubland,Shrubland,Shrubland
+Corn,Cropland,Coarse grains
+FiberCrop,Cropland,Other crops
+FodderGrass,Cropland,Fodder crops
+FodderHerb,Cropland,Fodder crops
+MiscCrop,Cropland,Other crops
+OilCrop,Cropland,Oil crops
+Soybean,Cropland,Oil crops
+Rapeseed,Cropland,Oil crops
+OtherGrain,Cropland,Coarse grains
+PalmFruit,Cropland,Oil crops
+Rice,Cropland,Rice
+SugarCrop,Cropland,Other crops
+Wheat,Cropland,Wheat
+biomass_grass,Biomass,Biomass
+biomass_tree,Biomass,Biomass
+Root_tuber,Cropland,Other crops
+ProtectedGrassland,Fixed,Fixed
+ProtectedShrubland,Fixed,Fixed
+ProtectedUnmanagedForest,Fixed,Fixed
+ProtectedUnmanagedPasture,Fixed,Fixed
+RockIceDesert,Fixed,Fixed
+UrbanLand,Fixed,Fixed
+Tundra,Fixed,Fixed
+biomassGrass,Biomass,Biomass
+biomassTree,Biomass,Biomass
+Roottuber,Cropland,Other crops

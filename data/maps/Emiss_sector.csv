@@ -1,0 +1,70 @@
+sector,sector1
+backup_electricity,other
+Beef,livestock
+biomass,crop
+cement,cement
+comm cooling,other
+comm heating,other
+comm others,other
+Corn,crop
+csp_backup,other
+Dairy,livestock
+district heat,other
+elec_biomass (conv),elec
+elec_biomass (IGCC),elec
+elec_coal (conv pul),elec
+elec_coal (IGCC),elec
+elec_gas (CC),elec
+elec_gas (steam/CT),elec
+elec_refined liquids (CC),elec
+elec_refined liquids (steam/CT),elec
+electricity,elec
+electricity_net_ownuse,elec
+ethanol,ethanol
+FiberCrop,crop
+FodderGrass,crop
+FodderHerb,crop
+gas pipeline,other
+gas processing,other
+H2 central production,other
+H2 forecourt production,other
+industrial energy use,other
+industrial feedstocks,other
+industrial processes,other
+MiscCrop,crop
+N fertilizer,N fertilizer
+OilCrop,crop
+OtherGrain,crop
+PalmFruit,crop
+Pork,livestock
+Poultry,livestock
+process heat cement,other
+Rapeseed,crop
+refined liquids gasoline pool,other
+refining,other
+regional biomass,biomass
+regional biomassOil,biomass
+regional corn for ethanol,biomass
+regional sugar for ethanol,biomass
+resid cooling,other
+resid heating,other
+resid others,other
+Rice,crop
+Root_Tuber,crop
+SheepGoat,livestock
+Soybean,crop
+SugarCrop,crop
+trn_aviation_intl,trn
+trn_freight,trn
+trn_freight_road,trn
+trn_pass,trn
+trn_pass_road,trn
+trn_pass_road_bus,trn
+trn_pass_road_LDV,trn
+trn_pass_road_LDV_2W,trn
+trn_pass_road_LDV_4W,trn
+trn_shipping_intl,trn
+unconventional oil production,other
+UnmanagedLand,UnmanagedLand
+urban processes,other
+Wheat,crop

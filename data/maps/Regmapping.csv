@@ -1,0 +1,33 @@
+RegID,region,REG,REG1,REG2,REG10_AR6,REG10_AR6_name,REG5_AR6,REG5_AR6_name
+G2,Africa_Eastern,E. AFR,Africa_Eastern,Africa_Eastern,AFRICA,Countries of Sub-Saharan Africa,Middle East and Africa,Countries of the Middle East and Africa
+G3,Africa_Northern,N. AFR,Africa_Northern,Africa_Northern,AFRICA,Countries of Sub-Saharan Africa,Middle East and Africa,Countries of the Middle East and Africa
+G4,Africa_Southern,S. AFR,Africa_Southern,Africa_Southern,AFRICA,Countries of Sub-Saharan Africa,Middle East and Africa,Countries of the Middle East and Africa
+G5,Africa_Western,W. AFR,Africa_Western,Africa_Western,AFRICA,Countries of Sub-Saharan Africa,Middle East and Africa,Countries of the Middle East and Africa
+G24,South Africa,South Africa,South Africa,South Africa,AFRICA,Countries of Sub-Saharan Africa,Middle East and Africa,Countries of the Middle East and Africa
+G11,China,China,China,China,CHINA+,Countries of centrally-planned Asia; primarily China,Asia,Asian countries except Japan
+G30,Taiwan,China,China,Taiwan,CHINA+,Countries of centrally-planned Asia; primarily China,Asia,Asian countries except Japan
+G12,EU-12,EU12,EU-12,EU-12,EUROPE,"Eastern and Western Europe (i.e., the EU28)",OECD and EU,OECD90 and EU (and EU candidate) countries
+G13,EU-15,EU15,EU-15,EU-15,EUROPE,"Eastern and Western Europe (i.e., the EU28)",OECD and EU,OECD90 and EU (and EU candidate) countries
+G14,Europe_Eastern,E. EUP,E. EUP,E. EUP,EUROPE,"Eastern and Western Europe (i.e., the EU28)",OECD and EU,OECD90 and EU (and EU candidate) countries
+G15,Europe_Non_EU,NEU,NEU,NEU,EUROPE,"Eastern and Western Europe (i.e., the EU28)",OECD and EU,OECD90 and EU (and EU candidate) countries
+G16,European Free Trade Association,EUP. FTA,EUP. FTA,EUP. FTA,EUROPE,"Eastern and Western Europe (i.e., the EU28)",OECD and EU,OECD90 and EU (and EU candidate) countries
+G17,India,India,India,India,INDIA+,Countries of South Asia; primarily India,Asia,Asian countries except Japan
+G27,South Asia,S. Asia,S. Asia,S. Asia,INDIA+,Countries of South Asia; primarily India,Asia,Asian countries except Japan
+G31,Argentina,Argentina,Argentina,Argentina,LATIN_AM,Countries of Latin America and the Caribbean,Latin America,Latin American countries
+G7,Brazil,Brazil,Brazil,Brazil,LATIN_AM,Countries of Latin America and the Caribbean,Latin America,Latin American countries
+G9,Central America and Caribbean,C. Amer,C. Amer.,C. Amer.,LATIN_AM,Countries of Latin America and the Caribbean,Latin America,Latin American countries
+G32,Colombia,Colombia,Colombia,Colombia,LATIN_AM,Countries of Latin America and the Caribbean,Latin America,Latin American countries
+G20,Mexico,Mexico,Mexico,Mexico,LATIN_AM,Countries of Latin America and the Caribbean,Latin America,Latin American countries
+G25,South America_Northern,N. S. Amer.,N. S. Amer.,N. S. Amer.,LATIN_AM,Countries of Latin America and the Caribbean,Latin America,Latin American countries
+G26,South America_Southern,S. S. Amer.,S. S. Amer.,S. S. Amer.,LATIN_AM,Countries of Latin America and the Caribbean,Latin America,Latin American countries
+G21,Middle East,M. East,Middle East,Middle East,MIDDLE_EAST,"Countries of the Middle East; Iran, Iraq, Israel, Saudi Arabia, Qatar, etc.",Middle East and Africa,Countries of the Middle East and Africa
+G8,Canada,Canada,Canada,Canada,NORTH_AM,North America; primarily the United States of America and Canada,OECD and EU,OECD90 and EU (and EU candidate) countries
+G1,USA,USA,USA,USA,NORTH_AM,North America; primarily the United States of America and Canada,OECD and EU,OECD90 and EU (and EU candidate) countries
+G6,Australia_NZ,Australia,Australia,Australia,PAC_OECD,Pacific OECD,OECD and EU,OECD90 and EU (and EU candidate) countries
+G19,Japan,Japan,Japan,Japan,PAC_OECD,Pacific OECD,OECD and EU,OECD90 and EU (and EU candidate) countries
+G28,South Korea,S. Korea,S. Korea,S. Korea,PAC_OECD,Pacific OECD,OECD and EU,OECD90 and EU (and EU candidate) countries
+G10,Central Asia,C. Asia,C. Asia,C. Asia,REF_ECON,Reforming Economies of Eastern Europe and the Former Soviet Union; primarily Russia,Reforming economies,Countries from the Reforming Ecomonies of the Former Soviet Union
+G22,Pakistan,Pakistan,Pakistan,Pakistan,REF_ECON,Reforming Economies of Eastern Europe and the Former Soviet Union; primarily Russia,Reforming economies,Countries from the Reforming Ecomonies of the Former Soviet Union
+G23,Russia,Russia,Russia,Russia,REF_ECON,Reforming Economies of Eastern Europe and the Former Soviet Union; primarily Russia,Reforming economies,Countries from the Reforming Ecomonies of the Former Soviet Union
+G18,Indonesia,Indonesia,Indonesia,Indonesia,REST_ASIA,Other countries of Asia,Asia,Asian countries except Japan
+G29,Southeast Asia,SE. Asia,SE. Asia,SE. Asia,REST_ASIA,Other countries of Asia,Asia,Asian countries except Japan
