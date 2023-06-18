@@ -1,5 +1,8 @@
 MainFig6_AgPriceImplication <- function(){
 
+  library(broom)
+
+
   OutFolderName <- "Main"
   dir.create(file.path(outdir, OutFolderName), showWarnings = F)
   SIOutFolderName <- "SI"
@@ -50,7 +53,7 @@ MainFig6_AgPriceImplication <- function(){
 
   LoadFigData("LandToEMs_For") -> LandToEMs_For
 
-  LandToEMs_For %>%
+  LandToEMs_For %>% filter(sector != "NonLand-based BECCS") %>%
     mutate(sector = if_else(grepl("BECCS", sector), "BECCS", sector)) %>%
     group_by_at(vars(-GtCO2, -Mha)) %>%
     summarize(Mha = sum(Mha), GtCO2 = sum(GtCO2), .groups = "drop") %>%
@@ -70,7 +73,7 @@ MainFig6_AgPriceImplication <- function(){
 
 
   LoadFigData("LandToEMs_ForNat") -> LandToEMs_ForNat
-  LandToEMs_ForNat %>%
+  LandToEMs_ForNat %>% filter(sector != "NonLand-based BECCS") %>%
     mutate(sector = if_else(grepl("BECCS", sector), "BECCS", sector)) %>%
     group_by_at(vars(-GtCO2, -Mha)) %>%
     summarize(Mha = sum(Mha), GtCO2 = sum(GtCO2), .groups = "drop") %>%
@@ -90,31 +93,38 @@ MainFig6_AgPriceImplication <- function(){
 
 
   StapleCropPriceProdCropLandReg %>%
-    group_by_at(vars(-price, -prod, -region, -cropland, -year)) %>%
-    summarise(price = weighted.mean(price, prod), prod = sum(prod), cropland = sum(cropland)) %>%
+    group_by_at(vars(-price, -prod, -region, -cropland)) %>%
+    summarise(price = weighted.mean(price, prod), prod = sum(prod),
+              cropland = sum(cropland)) %>%
     ungroup() %>%
+    group_by_at(vars(-price, -prod, -cropland, -year)) %>%
+    summarise(price2100 = price[year == 2100], price = weighted.mean(price, prod),
+              prod = sum(prod),
+              cropland = sum(cropland)) %>% ungroup() %>%
     mutate(price = price / price[scenario == "BioUn_ProtLow_LCT0_FCT0_REF"],
+           price2100 = price2100 / price2100[scenario == "BioUn_ProtLow_LCT0_FCT0_REF"],
            cropland = cropland / cropland[scenario == "BioUn_ProtLow_LCT0_FCT0_REF"],
            prod = prod / prod[scenario == "BioUn_ProtLow_LCT0_FCT0_REF"]) %>%
     filter(scenario != "BioUn_ProtLow_LCT0_FCT0_REF") ->
     AgPrice_Mean
 
 
-  # StapleCropPriceProdCropLandReg %>%
-  #   group_by_at(vars(-price, -prod, -region, -cropland, -year)) %>%
-  #   summarise(price = weighted.mean(price, prod), prod = sum(prod), cropland = sum(cropland)) %>%
-  #   ungroup() %>%
-  #   mutate(price = price / gdp_deflator(1975, 2015) ) %>%
-  #   filter(scenario != "BioUn_ProtLow_LCT0_FCT0_REF") ->
-  #   AgPrice_Mean
+  StapleCropPriceProdCropLandReg %>%
+    group_by_at(vars(-price, -prod, -region, -cropland)) %>%
+    summarise(price = weighted.mean(price, prod), prod = sum(prod),
+              cropland = sum(cropland)) %>%
+    ungroup() %>%
+    group_by_at(vars(-price, -prod, -cropland, -year)) %>%
+    summarise(price2100 = price[year == 2100], price = weighted.mean(price, prod),
+              prod = sum(prod), cropland = sum(cropland)) %>%
+    ungroup() %>%
+    mutate(price = price / gdp_deflator(1975, 2015)* 1000,
+           price2100 = price2100 / gdp_deflator(1975, 2015) * 1000) %>%
+    filter(scenario != "BioUn_ProtLow_LCT0_FCT0_REF") ->
+    AgPrice_Mean
 
+  # reference = 286!
 
-  DF_LRE %>% mutate(method = "Method1: Forest") %>%
-    bind_rows(DF_LRE_Nat %>% mutate(method = "Method2: Foreat & Natural")) %>%
-    left_join_error_no_match(
-      AgPrice_Mean
-    ) %>% filter(NegForLand == F) ->
-    df_LRE_Agprice
 
   DF_LRE %>% mutate(method = "Method1: Forest") %>%
     bind_rows(DF_LRE_Nat %>% mutate(method = "Method2: Foreat & Natural")) %>%
@@ -124,27 +134,61 @@ MainFig6_AgPriceImplication <- function(){
     df_LRE_Agprice
 
 
-  df_LRE_Agprice %>% select(LCT, LandSupply, AllLand:method, price) %>%
+  data.frame(method = "Method1: Forest", price = 286, element = "LULUCF") %>%
+  mutate(element = factor(element, levels = c("AllLand", "BECCS", "LULUCF"),
+                          labels = c("Land-based BECCS & LULUCF", "Land-based BECCS", "LULUCF vs. Forest"))) ->
+    df2
+
+  df_LRE_Agprice %>% select(LCT, LandSupply, AllLand:method, price, price2100) %>%
     gather(element, value, AllLand:LULUCF) %>%
     mutate(element = factor(element, levels = c("AllLand", "BECCS", "LULUCF"),
-                            labels = c("Aggregate", "BECCS eff.", "LULUCF eff.")))->
-    df_LRE_Agprice1
-
-  df_LRE_Agprice1 %>% filter(NegForLand == F) %>%
+                            labels = c("Land-based BECCS & LULUCF", "Land-based BECCS", "LULUCF vs. Forest"))) %>%
+    filter(NegForLand == F) %>%
     filter(value < 0) %>%
-    ggplot() + #facet_grid(method~element, scales = "free") +
-    facet_wrap(method~element, scales = "free") +
-    geom_smooth(aes(x = value, y = price), method = 'lm') +
-    geom_point(aes(x = value, y = price, fill = LCT, color = LCT, shape = LandSupply), size = 3) +
+    # more refining
+    filter(!(LandSupply == "A/R-Focused" & LCT == "10%-LCP" ) ) -> df1
+
+  df1 %>% group_by(element, method) %>% mutate(value = - value) %>%
+    summarise(r = cor(price, value) %>% round(2),
+              `r-squared` = r^2%>% round(2),
+              cov = cov(price, value),
+              var = var(price),
+              beta = (cov / var) %>% round(3),
+              x = min(value)) %>% ungroup() %>%
+    group_by(element) %>%
+    mutate( x = min(x)) %>% ungroup()->
+    df3
+
+  df1 %>%
+    ggplot() +
+    geom_hline(yintercept = 286, color = "red", linetype = 5) +
+
+    facet_grid(method~element, scales = "free_x") +
+    geom_smooth(aes(x = -value, y = price), method = 'lm') +
+    geom_point(aes(x = -value, y = price, fill = LCT, color = LCT, shape = LandSupply), size = 3) +
+
+    geom_text(data = df2,
+              aes(label = paste0("Reference: $286/t"), x = 11, y = 290),
+              size = 6, color = "red", hjust = 1) +
+
+    geom_text(data = df3,
+              aes(label = paste0("r = ", r), x = x + 0.1, y = 390),
+              size = 6, color = "blue", hjust = 0) +
+
+    geom_text(data = df3,
+              aes(label = paste0("beta = ", beta), x = x + 0.1, y = 375),
+              size = 6, color = "blue", hjust = 0) +
+
+   #geom_point(aes(x = log(-value), y = log(price), fill = LCT, color = LCT, shape = LandSupply), size = 3) +
     scale_shape_manual(values = c(21, 22, 24, 23)) +
     scale_fill_npg() +
     scale_color_npg() +
-    #scale_y_continuous(expand = c(0, 0), breaks = seq(1, 1.8, 0.2)) +
-    labs(x = "Land removal efficiency",
+    labs(x = expression(paste("Land removal efficiency (absolute value) (", tCO[2], " ", ha^-1,"", yr^-1, ")")),
          color = "LCP scenario", fill = "LCP scenario", shape = "Policy scenario",
-         y = "Reference = 1 (Index)",
-         #y = "2015 USD per kg",
-         title = "Main Points: Ag price impacts vs. Land CDR efficiency") +
+         #y = "Reference = 1 (Index)",
+         y = "Mean staple crop prices (2015 USD per tonne)"
+         #title = "Main Points: Ag price impacts vs. Land CDR efficiency"
+         ) +
     theme_bw() + theme0 + theme_leg +
     theme(legend.text.align = 0,
           panel.grid = element_blank(),
@@ -153,32 +197,86 @@ MainFig6_AgPriceImplication <- function(){
           panel.spacing.x = unit(0.5, "lines")
     ) + theme(legend.position = "right") -> p; p
 
-  p %>% Write_png(paste0(SIOutFolderName, "/AllPoints_SIFig_AgPrice_LandCDREF"),
-                  h = 3600, w = 6000,  r = 300)
-  p %>% Write_png(paste0(SIOutFolderName, "/MainPoints_SIFig_AgPrice_LandCDREF"),
-                  h = 3600, w = 6000,  r = 300)
+
+  p %>% Write_png(paste0(SIOutFolderName, "/MainPoints_SIFig_MeanAgPrice_LandCDREF"),
+                  h = 2800, w = 4500,  r = 300)
 
 
+  lm(log(price) ~  log(-AllLand), data =  df_LRE_Agprice %>% filter(NegForLand == F) %>%
+       filter(LULUCF < 0) %>% filter(method == "Method1: Forest") #%>% filter(grepl("100", LCT))
+  ) -> lm_AgP_LandCDREF
+
+  tidy(lm_AgP_LandCDREF) %>%  mutate(Model = "M1_Model1") %>%
+    mutate(adjR2 = summary(lm_AgP_LandCDREF)$adj.r.squared) -> M1; M1
+
+  lm(log(price) ~  log(-BECCS), data =  df_LRE_Agprice %>% filter(NegForLand == F) %>%
+       filter(LULUCF < 0) %>% filter(method == "Method1: Forest") #%>% filter(grepl("100", LCT))
+  ) -> lm_AgP_LandCDREF
+  tidy(lm_AgP_LandCDREF) %>%  mutate(Model = "M1_Model2") %>%
+    mutate(adjR2 = summary(lm_AgP_LandCDREF)$adj.r.squared)  -> M2; M2
 
 
-  library(broom)
+  lm(log(price) ~  log(-LULUCF), data =  df_LRE_Agprice %>% filter(NegForLand == F) %>%
+       filter(LULUCF < 0) %>% filter(method == "Method1: Forest") #%>% filter(grepl("100", LCT))
+  ) -> lm_AgP_LandCDREF
 
-  lm(log(price) ~ BECCS + LULUCF, data =  df_LRE_Agprice %>%  filter(LULUCF < 0) %>% filter(method == "Method1: Forest")
+  tidy(lm_AgP_LandCDREF) %>%  mutate(Model = "M1_Model3") %>%
+    mutate(adjR2 = summary(lm_AgP_LandCDREF)$adj.r.squared)  -> M3; M3
+
+
+  lm(log(price) ~  log(-LULUCF) + log(-BECCS), data =  df_LRE_Agprice %>% filter(NegForLand == F) %>%
+       filter(LULUCF < 0) %>% filter(method == "Method1: Forest") #%>% filter(grepl("100|50", LCT))
      ) -> lm_AgP_LandCDREF
-  lm(price ~ BECCS + LULUCF, data =  df_LRE_Agprice %>%  filter(LULUCF < 0) %>% filter(method == "Method1: Forest")
+
+  tidy(lm_AgP_LandCDREF) %>%  mutate(Model = "M1_Model4") %>%
+    mutate(adjR2 = summary(lm_AgP_LandCDREF)$adj.r.squared)  -> M4; M4
+
+
+
+  lm(log(price) ~  log(-AllLand), data =  df_LRE_Agprice %>% filter(NegForLand == F) %>%
+       filter(LULUCF < 0) %>% filter(method == "Method2: Foreat & Natural") #%>% filter(grepl("100", LCT))
   ) -> lm_AgP_LandCDREF
-  tidy(lm_AgP_LandCDREF) %>%
-    mutate(adjR2 = summary(lm_AgP_LandCDREF)$adj.r.squared)
+
+  tidy(lm_AgP_LandCDREF) %>%  mutate(Model = "M2_Model1") %>%
+    mutate(adjR2 = summary(lm_AgP_LandCDREF)$adj.r.squared) -> M5; M5
+
+  lm(log(price) ~  log(-BECCS), data =  df_LRE_Agprice %>% filter(NegForLand == F) %>%
+       filter(LULUCF < 0) %>% filter(method == "Method2: Foreat & Natural") #%>% filter(grepl("100", LCT))
+  ) -> lm_AgP_LandCDREF
+  tidy(lm_AgP_LandCDREF) %>%  mutate(Model = "M2_Model2") %>%
+    mutate(adjR2 = summary(lm_AgP_LandCDREF)$adj.r.squared)  -> M6; M6
 
 
-  lm(log(price) ~ BECCS + LULUCF, data =  df_LRE_Agprice %>%  filter(LULUCF < 0) %>% filter(method == "Method2: Foreat & Natural")
+  lm(log(price) ~  log(-LULUCF), data =  df_LRE_Agprice %>% filter(NegForLand == F) %>%
+       filter(LULUCF < 0) %>% filter(method == "Method2: Foreat & Natural") #%>% filter(grepl("100", LCT))
   ) -> lm_AgP_LandCDREF
 
-  lm(price ~ BECCS + LULUCF + BECCS * LULUCF, data =  df_LRE_Agprice %>%  filter(LULUCF < 0) %>% filter(method == "Method2: Foreat & Natural")
-  ) -> lm_AgP_LandCDREF
-  tidy(lm_AgP_LandCDREF) %>%
-    mutate(adjR2 = summary(lm_AgP_LandCDREF)$adj.r.squared)
+  tidy(lm_AgP_LandCDREF) %>%  mutate(Model = "M2_Model3") %>%
+    mutate(adjR2 = summary(lm_AgP_LandCDREF)$adj.r.squared)  -> M7; M7
 
+
+  lm(log(price) ~  log(-LULUCF) + log(-BECCS), data =  df_LRE_Agprice %>% filter(NegForLand == F) %>%
+       filter(LULUCF < 0) %>% filter(method == "Method2: Foreat & Natural") #%>% filter(grepl("100|50", LCT))
+  ) -> lm_AgP_LandCDREF
+
+  tidy(lm_AgP_LandCDREF) %>%  mutate(Model = "M2_Model4") %>%
+    mutate(adjR2 = summary(lm_AgP_LandCDREF)$adj.r.squared)  -> M8; M8
+
+
+
+
+
+  lapply(paste0("M", 1:8), function(x){
+    get(x)
+  })  %>% bind_rows() -> M1_8
+
+
+  M1_8 %>% filter(term != "(Intercept)") %>%
+    gather(element, value, estimate, std.error, adjR2, p.value, statistic) %>%
+    spread(Model, value) %>%  arrange(element) %>%
+    write.csv( paste0(outdir, "/", SIOutFolderName, "/SITable_AgPrice_LandCDREfficiency.csv") )
+
+## Done table ----
 
 
 
@@ -298,8 +396,8 @@ MainFig6_AgPriceImplication <- function(){
 
 
   # log price vs. C price----
-  library(broom)
-  library(jtools)
+
+  #library(jtools)
 
   StapleP_CP1  %>% select(-sector, -CPRel) %>%
     mutate(AgPrice = log(AgPrice)*100, CP = CP ) %>%

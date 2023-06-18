@@ -129,15 +129,21 @@ MainFig2_CarbonPrices <- function(){
 
     #geom_boxplot(aes(x = year, y = value, fill = EM_CO2_2100_cut), outlier.shape = NA) +
     scale_fill_manual(values = c(ColorViridis4)) +
-    labs(x = "Year", fill = expression(paste("AR6 CB (", GtCO[2], ")")),
+    labs(x = "Year",
+         #fill = expression(atop(paste("AR6 CB (", GtCO[2], ")"),
+          #                      paste("(Panel B)", "             "))),
+         fill = expression(atop(paste("AR6 (Panel B)"),
+                                 paste("CB (", GtCO[2], ")", "    ")  ) ),
          y = expression(paste("2010$ per t", CO[2])) ) +
     scale_y_continuous(expand = c(0,0), limits = c(-30, 1500)) +
     theme_bw() + theme0 +
-    theme(legend.text.align = 0,
+    theme(#legend.text.align = 0,
+      legend.title = element_text(hjust = 0),
+      legend.box.just = "left",
           panel.grid = element_blank())-> AR6_CP;AR6_CP
 
 
-  EMs_mitigation_CO2Price2010 %>%
+    EMs_mitigation_CO2Price2010 %>%
     filter(year %in% c(2025, 2050, 2100)) %>%
     mutate(year = as.character(year)) %>%
     ggplot() + facet_wrap(~market, nrow = 1) +
@@ -165,7 +171,8 @@ MainFig2_CarbonPrices <- function(){
     scale_shape_manual(values = c(1, 0, 2, 10)) +
     scale_fill_npg() + scale_color_npg() +
     scale_y_continuous(expand = c(0,0), limits = c(-30, 1500)) +
-    labs(x = "Year", fill = "LCP scenario", shape = "Policy scenario", color = "LCP scenario",
+    labs(x = "Year", fill = "LCP scenario",
+         shape = "Policy scenario\n(Panel A)", color = "LCP scenario\n(Panel A)",
          y = expression(paste("2010$ per t", CO[2])) ) +
     theme_bw() + theme0 +
     theme(#axis.text.x = element_text(angle = 30, hjust = 0.7, vjust = 1, margin = margin(t =10, b = 0)),

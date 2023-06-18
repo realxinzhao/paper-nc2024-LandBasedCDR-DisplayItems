@@ -8,6 +8,8 @@ library(scales)
 library(dplyr)
 library(gcamdata)
 
+require(broom)
+
 
 library(patchwork)
 library(cowplot)
@@ -42,6 +44,8 @@ GCAM_CPs()
 # Cumulative emissions data ----
 GCAM_EMs(aInclude_LCPForOnly = T, aInclude_LowBio = T, aRM_1p5C = F) -> EMs
 GCAM_EMs(aRM_1p5C = F) -> EMs
+
+
 
 
 
