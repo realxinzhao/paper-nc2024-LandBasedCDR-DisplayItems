@@ -8,7 +8,9 @@ MainFig5_LandRemovalEfficiency <- function(INPUT_DF = AR6_604,
   outdir <- "output/GCAM/"
   OutFolderName <- "Main"
   SIOutFolderName <- "SI"
+
   dir.create(file.path(outdir, OutFolderName), showWarnings = F)
+  dir.create(file.path(outdir, SIOutFolderName, "LandCDREfficiency"), showWarnings = F)
 
 
   # Load data ----
@@ -468,7 +470,7 @@ pp %>% Write_png(paste0(SIOutFolderName, "/SIFig_LandCDREfficiency_AR6_GCAM"), h
     cowplot:: get_legend(A1) -> legendA1
 
     cowplot::ggdraw(legendA1)  %>%
-      Write_png(paste0(SIOutFolderName, "/SIFig_efficiency_legend"), h = 4300, w = 1300, r = 600)
+      Write_png(paste0(SIOutFolderName, "/LandCDREfficiency/SIFig_efficiency_legend"), h = 4300, w = 1300, r = 600)
 
 
 
@@ -517,7 +519,7 @@ pp %>% Write_png(paste0(SIOutFolderName, "/SIFig_LandCDREfficiency_AR6_GCAM"), h
   (p2|(plot_spacer() / pright + plot_layout(heights = c(0.07, 1))) )+
     plot_layout(widths = c(1, 0.1), guides = 'collect') -> ppA; ppA
 
-    ppA %>% Write_png(paste0(SIOutFolderName, "/SIFig_efficiency_BECCS_AR6_addGCAM"),
+    ppA %>% Write_png(paste0(SIOutFolderName, "/LandCDREfficiency/SIFig_efficiency_BECCS_AR6_addGCAM_2100"),
                       h = 4300, w = 4300, r = 600)
 
 
@@ -643,7 +645,7 @@ pp %>% Write_png(paste0(SIOutFolderName, "/SIFig_LandCDREfficiency_AR6_GCAM"), h
   (p2|(plot_spacer() / pright + plot_layout(heights = c(0.07, 1))) )+
     plot_layout(widths = c(1, 0.1), guides = 'collect') -> ppB; ppB
 
-    ppB %>% Write_png(paste0(SIOutFolderName, "/SIFig_efficiency_For_AR6_addGCAM"),
+    ppB %>% Write_png(paste0(SIOutFolderName, "/LandCDREfficiency/SIFig_efficiency_For_AR6_addGCAM_2100"),
                       h = 4300, w = 4300, r = 600)
 
 
@@ -773,7 +775,7 @@ pp %>% Write_png(paste0(SIOutFolderName, "/SIFig_LandCDREfficiency_AR6_GCAM"), h
   (p2|(plot_spacer() / pright + plot_layout(heights = c(0.07, 1))) )+
     plot_layout(widths = c(1, 0.1), guides = 'collect') -> ppA; ppA
 
-    ppA %>% Write_png(paste0(SIOutFolderName, "/SIFig_efficiency_BECCS_AR6_addGCAM_2050"),
+    ppA %>% Write_png(paste0(SIOutFolderName, "/LandCDREfficiency/SIFig_efficiency_BECCS_AR6_addGCAM_2050"),
                       h = 4300, w = 4300, r = 600)
 
 
@@ -906,11 +908,8 @@ pp %>% Write_png(paste0(SIOutFolderName, "/SIFig_LandCDREfficiency_AR6_GCAM"), h
     plot_layout(widths = c(1, 0.1), guides = 'collect') -> ppB; ppB
 
 
-  ppB %>% Write_png(paste0(SIOutFolderName, "/SIFig_efficiency_For_AR6_addGCAM_2050"),
+  ppB %>% Write_png(paste0(SIOutFolderName, "/LandCDREfficiency/SIFig_efficiency_For_AR6_addGCAM_2050"),
                     h = 4300, w = 4300, r = 600)
-
-
-
 
 
 

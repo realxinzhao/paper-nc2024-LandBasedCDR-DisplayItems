@@ -129,12 +129,6 @@ ggplot() +
                guide = "colorsteps",
                name = expression(paste("AR6 CB ", "(",GtCO[2],")")) ) +
 
-  # scale_fill_viridis_b(limits = c(175, 1475),
-  #                      option = "D", begin = 0, end = 1,
-  #                      #option = "cividis", #option = "plasma",
-  #                      breaks = c(500, 825, 1150),
-  #                      direction = -1,
-  #                      name = expression(paste("AR6 CB ", "(",GtCO[2],")")))  +
 
   scale_shape_manual(values = c(21, 22, 24), name = "This study") +
   #scale_color_npg(name = "UCT (This study)") +
@@ -351,9 +345,9 @@ LUC_vs_FFI +
 
 
   if (ADD_GCAM == T) {
-    p3 %>% Write_png(paste0(OutFolderName, "/MainFig1_BECCS_LULUCF_FFI_AR6_GCAM"), h = 4300, w = 9600, r = 600)
+    p3 %>% Write_png(paste0(OutFolderName, "/MainFig1_BECCS_LULUCF_EIP_AR6_GCAM"), h = 4300, w = 9600, r = 600)
     }else{
-    p3 %>% Write_png(paste0(OutFolderName, "/MainFgi1_BECCS_LULUCF_FFI_AR6"), h = 4300, w = 9600, r = 600)
+    p3 %>% Write_png(paste0(OutFolderName, "/MainFgi1_BECCS_LULUCF_EIP_AR6"), h = 4300, w = 9600, r = 600)
   }
 
 }

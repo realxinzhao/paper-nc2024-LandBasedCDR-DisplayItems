@@ -198,7 +198,7 @@ MainFig6_AgPriceImplication <- function(){
     ) + theme(legend.position = "right") -> p; p
 
 
-  p %>% Write_png(paste0(SIOutFolderName, "/MainPoints_SIFig_MeanAgPrice_LandCDREF"),
+  p %>% Write_png(paste0(SIOutFolderName, "/SIFig_GCAM_MeanAgPrice_LandCDREF_MainPoints"),
                   h = 2800, w = 4500,  r = 300)
 
 
