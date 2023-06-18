@@ -41,6 +41,9 @@ MainFig1_LandCDR_AR6GCAM(ADD_GCAM = F)
 MainFig1_LandCDR_AR6GCAM(ADD_GCAM = T)
 
 
+source("R/AR6/AR6_MainFig5_LandRemovalEfficiency.R")
+MainFig5_LandRemovalEfficiency()
+
 
 readRDS("output/AR6/RDS_temp/AR6_604.rds") -> AR6_604
 
