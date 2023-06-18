@@ -4,4 +4,6 @@ This repository includes the code for generating key figures in the working pape
 ![Fig. 1 Contributions of land-based carbon dioxide removal measures](./output/GCAM/Main/MainFig1_BECCS_LULUCF_FFI_AR6_GCAM1.png)
 
 
+    
+
 ![Fig. 3 Impact of land carbon pricing strength on 2 °C futures](./output/GCAM/Main/MainFig3_LandCarbonPricingStrength.png)
