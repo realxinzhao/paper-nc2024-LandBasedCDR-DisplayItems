@@ -2,7 +2,7 @@
 SIFigs_LandCDR_AR6_byModel<- function(PALPHA = 0.8, PSIZE = 1.8){
 
   outdir <- "output/GCAM/"
-  OutFolderName <- "Main"
+  SIOutFolderName <- "SI"
   dir.create(file.path(outdir, OutFolderName), showWarnings = F)
 
 

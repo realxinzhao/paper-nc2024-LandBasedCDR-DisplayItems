@@ -165,7 +165,6 @@ ggplot() +
 
 
 
-
 df1 <- y_x_data %>%
   group_by(EM_CO2_2100_cut) %>%
   summarise(sd0 = quantile(`BECCS`, probs = 0.05),

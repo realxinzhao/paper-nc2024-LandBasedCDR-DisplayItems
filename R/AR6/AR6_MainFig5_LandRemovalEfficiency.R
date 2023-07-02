@@ -1,8 +1,8 @@
 
 
 
-MainFig5_LandRemovalEfficiency <- function(INPUT_DF = AR6_604,
-                                        PALPHA = 0.8, PSIZE = 1.8){
+MainFig5_LandRemovalEfficiency <-
+  function(PALPHA = 0.8, PSIZE = 1.8){
 
 
   outdir <- "output/GCAM/"
@@ -19,12 +19,116 @@ MainFig5_LandRemovalEfficiency <- function(INPUT_DF = AR6_604,
 
   LoadFigData("LandToEMs_For") -> LandToEMs_For
 
+
+  LoadFigData("LandALL") %>%
+    Agg_reg(LCT, LandSupply, land) %>%
+    filter(year %in% c(2020, 2050, 2100)) %>%
+    filter(land %in% c("Cropland - Energy")) %>%
+    group_by(LCT, LandSupply) %>%
+    transmute(LCT, LandSupply, year, LandEndYear = value - value[year == 2020]) %>%
+    filter(year %in% c(2050, 2100)) %>%  ungroup() %>%
+    filter(LCT %in% c("50%-LCP", "100%-LCP")) -> Land_BECCS
+
+  LoadFigData("LandALL") %>%
+    filter(grepl("Forest", land)) %>%
+    Agg_reg(LCT, LandSupply) %>%
+    filter(year %in% c(2020, 2050, 2100)) %>%
+    group_by(LCT, LandSupply) %>%
+    transmute(LCT, LandSupply, year, LandEndYear = value - value[year == 2020]) %>%
+    filter(year %in% c(2050, 2100)) %>%  ungroup() %>%
+    filter(LCT %in% c("50%-LCP", "100%-LCP")) -> Land_For
+
+  LoadFigData("LandALL") %>%
+    filter(grepl("Forest|Grassland|Shrubland", land)) %>%
+    Agg_reg(LCT, LandSupply) %>%
+    filter(year %in% c(2020, 2050, 2100)) %>%
+    group_by(LCT, LandSupply) %>%
+    transmute(LCT, LandSupply, year, LandEndYear = value - value[year == 2020]) %>%
+    filter(year %in% c(2050, 2100)) %>%  ungroup() %>%
+    filter(LCT %in% c("50%-LCP", "100%-LCP")) -> Land_ForNat
+
+
+  Land_BECCS %>% mutate(sector = "Land-based BECCS") %>%
+    bind_rows(Land_For %>% mutate(sector = "LULUCF")) %>%
+    bind_rows(
+      Land_BECCS %>%
+        bind_rows(Land_For) %>%
+        group_by(LCT, LandSupply, year) %>%
+        summarise(LandEndYear = sum(LandEndYear)) %>% mutate(sector = "BothLandbased" )
+    )  %>%   mutate(method = "Method1") %>%
+    bind_rows(
+      Land_BECCS %>% mutate(sector = "Land-based BECCS") %>%
+        bind_rows(Land_ForNat %>% mutate(sector = "LULUCF")) %>%
+        bind_rows(
+          Land_BECCS %>%
+            bind_rows(Land_ForNat) %>%
+            group_by(LCT, LandSupply, year) %>%
+            summarise(LandEndYear = sum(LandEndYear)) %>% mutate(sector = "BothLandbased" )
+        )  %>%   mutate(method = "Method2")
+    ) -> LandEndYear
+
+
+
+
+
   LandToEMs_For %>%
     #mutate(sector = if_else(grepl("BECCS", sector), "BECCS", sector)) %>%
     group_by_at(vars(-GtCO2, -Mha)) %>%
     summarize(Mha = sum(Mha), GtCO2 = sum(GtCO2), .groups = "drop") %>%
     filter(LCT != "Reference") ->
     GCAMResults
+
+  GCAMResults %>%
+    group_by(year, LandSupply, LCT) %>%
+    summarise_at(vars(Mha:GtCO2), sum) %>%
+    mutate(CDR = GtCO2/Mha * 1000) %>% filter(year == 2100) -> A
+
+  GCAMResults %>% filter(!grepl("NonLand", sector)) %>%
+    group_by(year, LandSupply, LCT) %>%
+    summarise_at(vars(Mha:GtCO2), sum) %>%
+    mutate(CDR = GtCO2/Mha * 1000) %>%
+    mutate(sector = "BothLandbased")  %>%
+    bind_rows(
+      GCAMResults %>% filter(!grepl("NonLand", sector)) %>%
+        group_by(year, LandSupply, LCT, sector) %>%
+        summarise_at(vars(Mha:GtCO2), sum) %>%
+        mutate(CDR = GtCO2/Mha * 1000)
+    ) %>% filter(LCT %in% c("50%-LCP", "100%-LCP")) %>%
+    mutate(method = "Method1") -> M1
+
+  LoadFigData("LandToEMs_ForNat") %>%
+    group_by_at(vars(-GtCO2, -Mha)) %>%
+    summarize(Mha = sum(Mha), GtCO2 = sum(GtCO2), .groups = "drop") %>%
+    filter(LCT != "Reference") ->
+    GCAMResults1
+
+  GCAMResults1 %>% filter(!grepl("NonLand", sector)) %>%
+    group_by(year, LandSupply, LCT) %>%
+    summarise_at(vars(Mha:GtCO2), sum) %>%
+    mutate(CDR = GtCO2/Mha * 1000) %>%
+    mutate(sector = "BothLandbased")  %>%
+    bind_rows(
+      GCAMResults1 %>% filter(!grepl("NonLand", sector)) %>%
+        group_by(year, LandSupply, LCT, sector) %>%
+        summarise_at(vars(Mha:GtCO2), sum) %>%
+        mutate(CDR = GtCO2/Mha * 1000)
+    ) %>% filter(LCT %in% c("50%-LCP", "100%-LCP")) %>%
+    mutate(method = "Method2") %>%
+    bind_rows(M1) %>%
+    left_join(LandEndYear) %>%
+    write.csv( paste0(outdir, "/", SIOutFolderName, "/SITable_LandCDREfficiency.csv") )
+
+
+
+  GCAMResults %>% filter(sector == "LULUCF") %>% mutate(year = as.character(year)) %>%
+    mutate(CDR = GtCO2/Mha * 1000) %>% filter(CDR < 0, GtCO2 <0) %>%
+    group_by(year) %>% summarise(mean = mean(CDR))
+
+
+  GCAMResults %>% filter(sector == "Land-based BECCS") %>% mutate(year = as.character(year)) %>%
+    mutate(BECCSCDR = GtCO2/Mha * 1000) %>%
+    group_by(year) %>% summarise(mean = mean(BECCSCDR))
+
 
   #PALPHA = 0.6
   PALPHA0 = PALPHA;  PSIZE0 = PSIZE
@@ -64,6 +168,21 @@ MainFig5_LandRemovalEfficiency <- function(INPUT_DF = AR6_604,
 
   CutRange <- EM_AFOLU_BECCS %>% distinct(EM_CO2_2100_cut) %>% pull %>% as.character()
 
+  # Land-based BECCS share ----
+  INPUT_DF %>% filter(Var %in% c("Biomass Modern", "Biomass EnergyCrop")) %>%
+    filter(year >= 2020) %>%
+    group_by_at(vars(-value, -year)) %>%
+    mutate(value = cumsum(value)) %>% ungroup() %>%
+    filter(year %in% c(2050, 2100)) %>%
+    select(-Variable) %>% spread(Var, value) %>%
+    filter(!is.na(`Biomass Modern`), !is.na(`Biomass EnergyCrop`)) %>% #n = 322
+    mutate(LandBasedBECCSShare = `Biomass EnergyCrop` / `Biomass Modern`,
+           BiomassNonLand = `Biomass Modern` - `Biomass EnergyCrop`) %>%
+    left_join(EM_AFOLU_BECCS %>%
+                filter(Var == "Carbon budget") %>%
+                select(Model,Scenario, year, EM_CO2_2100, EM_CO2_2100_cut),
+              by = c("Model", "Scenario", "year") )->
+    PE_Biomass
 
   # Land use change ----
 
@@ -155,7 +274,7 @@ MainFig5_LandRemovalEfficiency <- function(INPUT_DF = AR6_604,
 
     geom_point(data = GCAMResults %>% filter(sector == "LULUCF") %>% mutate(year = as.character(year)) %>%
                  mutate(CDR = GtCO2/Mha * 1000) %>% filter(CDR < 0, GtCO2 <0) %>%
-                 #bind a No-LCP value (dummy)
+                 #bind a No-LCP value (dummy) for legend
                bind_rows(
                  GCAMResults %>% filter(sector == "LULUCF") %>% mutate(year = as.character(year)) %>%
                    mutate(CDR = GtCO2/Mha * 1000) %>% filter(LCT == "No-LCP") %>% mutate(CDR = 1)
@@ -443,7 +562,7 @@ pp %>% Write_png(paste0(SIOutFolderName, "/SIFig_LandCDREfficiency_AR6_GCAM"), h
                  guide = "colorsteps",
                  name = expression(paste("AR6 CB ", "(",GtCO[2],")")) ) +
 
-    labs(x = expression(paste( Mha, " ", yr^-1)),
+    labs(x = "Mha",
          y = expression(paste(GtCO[2], " ", yr^-1)) ) +
     theme_bw()+ theme0 +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
@@ -571,7 +690,7 @@ pp %>% Write_png(paste0(SIOutFolderName, "/SIFig_LandCDREfficiency_AR6_GCAM"), h
                  guide = "colorsteps",
                  name = expression(paste("AR6 CB ", "(",GtCO[2],")")) ) +
 
-    labs(x = expression(paste( Mha, " ", yr^-1)),
+    labs(x = "Mha",
          y = expression(paste(GtCO[2], " ", yr^-1)) ) +
     theme_bw()+ theme0 +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
@@ -701,7 +820,7 @@ pp %>% Write_png(paste0(SIOutFolderName, "/SIFig_LandCDREfficiency_AR6_GCAM"), h
                  guide = "colorsteps",
                  name = expression(paste("AR6 CB ", "(",GtCO[2],")")) ) +
 
-    labs(x = expression(paste( Mha, " ", yr^-1)),
+    labs(x = "Mha",
          y = expression(paste(GtCO[2], " ", yr^-1)) ) +
     theme_bw()+ theme0 +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
@@ -830,7 +949,7 @@ pp %>% Write_png(paste0(SIOutFolderName, "/SIFig_LandCDREfficiency_AR6_GCAM"), h
                  guide = "colorsteps",
                  name = expression(paste("AR6 CB ", "(",GtCO[2],")")) ) +
 
-    labs(x = expression(paste( Mha, " ", yr^-1)),
+    labs(x = "Mha",
          y = expression(paste(GtCO[2], " ", yr^-1)) ) +
     theme_bw()+ theme0 +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),

@@ -351,7 +351,7 @@ MainFig4_PolicyScope <- function(){
 
 
     geom_vline(xintercept = 0) +
-    labs(x = expression(paste(Mha, " ", yr^-1)), y = expression(paste(GtCO[2], " ", yr^-1)),
+    labs(x = "Mha", y = expression(paste(GtCO[2], " ", yr^-1)),
          linetype = "Scenario", color = "Scenario", fill = "Scenario") +
     theme_bw() + theme0 +
     scale_color_manual(values = mypal_scenario, name = "Scenario") +
@@ -430,7 +430,7 @@ MainFig4_PolicyScope <- function(){
 
 
 
-    labs(x = expression(paste(Mha, " ", yr^-1)), y = expression(paste(GtCO[2], " ", yr^-1))) +
+    labs(x = "Mha", y = expression(paste(GtCO[2], " ", yr^-1))) +
     scale_color_manual(values = mypal_scenario, name = "Scenario") +
     scale_fill_manual(values = mypal_scenario, name = "Scenario") +
     scale_linetype_manual(values = c(3, 2, 1), name = "Land CDR efficiency") +

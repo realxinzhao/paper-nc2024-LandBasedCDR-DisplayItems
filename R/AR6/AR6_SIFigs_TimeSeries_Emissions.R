@@ -1,11 +1,11 @@
 
-SIFigs_TimeSeries_Emissions <- function(CUMULATIVE = F){
+SIFigs_TimeSeries_Emissions <- function(){
 
   # start from AR6.R----
 
   outdir <- "output/GCAM/"
   SIOutFolderName <- "SI"
-  dir.create(file.path(outdir, OutFolderName), showWarnings = F)
+  dir.create(file.path(outdir, SIOutFolderName), showWarnings = F)
 
   # Load data ----
   AR6_604 <- LoadFigData("AR6_604")
@@ -97,8 +97,8 @@ SIFigs_TimeSeries_Emissions <- function(CUMULATIVE = F){
 
 
 
-  # EM_AFOLU_BECCS_box_summary %>%
-  #   readr::write_csv(file.path(outdir, "TS/Emissions_TS_cum_stat.csv"))
+  EM_AFOLU_BECCS_box_summary %>% filter(year == 2100) %>%
+     readr::write_csv(file.path(outdir, SIOutFolderName, "AR6_Emissions_TS_cum_stat_2100.csv"))
 
 
   ggplot() + facet_wrap(~Var, scales = "fixed", nrow = 2) +

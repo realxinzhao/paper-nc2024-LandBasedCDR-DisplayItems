@@ -92,21 +92,21 @@ MainFig6_AgPriceImplication <- function(){
     mutate(NegForLand = if_else(scenario %in% NegForLand0, T, F)) -> DF_LRE_Nat
 
 
-  StapleCropPriceProdCropLandReg %>%
-    group_by_at(vars(-price, -prod, -region, -cropland)) %>%
-    summarise(price = weighted.mean(price, prod), prod = sum(prod),
-              cropland = sum(cropland)) %>%
-    ungroup() %>%
-    group_by_at(vars(-price, -prod, -cropland, -year)) %>%
-    summarise(price2100 = price[year == 2100], price = weighted.mean(price, prod),
-              prod = sum(prod),
-              cropland = sum(cropland)) %>% ungroup() %>%
-    mutate(price = price / price[scenario == "BioUn_ProtLow_LCT0_FCT0_REF"],
-           price2100 = price2100 / price2100[scenario == "BioUn_ProtLow_LCT0_FCT0_REF"],
-           cropland = cropland / cropland[scenario == "BioUn_ProtLow_LCT0_FCT0_REF"],
-           prod = prod / prod[scenario == "BioUn_ProtLow_LCT0_FCT0_REF"]) %>%
-    filter(scenario != "BioUn_ProtLow_LCT0_FCT0_REF") ->
-    AgPrice_Mean
+  # StapleCropPriceProdCropLandReg %>%
+  #   group_by_at(vars(-price, -prod, -region, -cropland)) %>%
+  #   summarise(price = weighted.mean(price, prod), prod = sum(prod),
+  #             cropland = sum(cropland)) %>%
+  #   ungroup() %>%
+  #   group_by_at(vars(-price, -prod, -cropland, -year)) %>%
+  #   summarise(price2100 = price[year == 2100], price = weighted.mean(price, prod),
+  #             prod = sum(prod),
+  #             cropland = sum(cropland)) %>% ungroup() %>%
+  #   mutate(price = price / price[scenario == "BioUn_ProtLow_LCT0_FCT0_REF"],
+  #          price2100 = price2100 / price2100[scenario == "BioUn_ProtLow_LCT0_FCT0_REF"],
+  #          cropland = cropland / cropland[scenario == "BioUn_ProtLow_LCT0_FCT0_REF"],
+  #          prod = prod / prod[scenario == "BioUn_ProtLow_LCT0_FCT0_REF"]) %>%
+  #   filter(scenario != "BioUn_ProtLow_LCT0_FCT0_REF") ->
+  #   AgPrice_Mean
 
 
   StapleCropPriceProdCropLandReg %>%
@@ -118,12 +118,12 @@ MainFig6_AgPriceImplication <- function(){
     summarise(price2100 = price[year == 2100], price = weighted.mean(price, prod),
               prod = sum(prod), cropland = sum(cropland)) %>%
     ungroup() %>%
-    mutate(price = price / gdp_deflator(1975, 2015)* 1000,
-           price2100 = price2100 / gdp_deflator(1975, 2015) * 1000) %>%
+    mutate(price = price / gdp_deflator(1975, 2010)* 1000,
+           price2100 = price2100 / gdp_deflator(1975, 2010) * 1000) %>%
     filter(scenario != "BioUn_ProtLow_LCT0_FCT0_REF") ->
     AgPrice_Mean
 
-  # reference = 286!
+  # reference = 263!
 
 
   DF_LRE %>% mutate(method = "Method1: Forest") %>%
@@ -134,7 +134,7 @@ MainFig6_AgPriceImplication <- function(){
     df_LRE_Agprice
 
 
-  data.frame(method = "Method1: Forest", price = 286, element = "LULUCF") %>%
+  data.frame(method = "Method1: Forest", price = 263, element = "LULUCF") %>%
   mutate(element = factor(element, levels = c("AllLand", "BECCS", "LULUCF"),
                           labels = c("Land-based BECCS & LULUCF", "Land-based BECCS", "LULUCF vs. Forest"))) ->
     df2
@@ -161,14 +161,14 @@ MainFig6_AgPriceImplication <- function(){
 
   df1 %>%
     ggplot() +
-    geom_hline(yintercept = 286, color = "red", linetype = 5) +
+    geom_hline(yintercept = 263, color = "red", linetype = 5) +
 
     facet_grid(method~element, scales = "free_x") +
     geom_smooth(aes(x = -value, y = price), method = 'lm') +
     geom_point(aes(x = -value, y = price, fill = LCT, color = LCT, shape = LandSupply), size = 3) +
 
     geom_text(data = df2,
-              aes(label = paste0("Reference: $286/t"), x = 11, y = 290),
+              aes(label = paste0("Reference: $263/t"), x = 11, y = 270),
               size = 6, color = "red", hjust = 1) +
 
     geom_text(data = df3,
@@ -186,7 +186,7 @@ MainFig6_AgPriceImplication <- function(){
     labs(x = expression(paste("Land removal efficiency (absolute value) (", tCO[2], " ", ha^-1,"", yr^-1, ")")),
          color = "LCP scenario", fill = "LCP scenario", shape = "Policy scenario",
          #y = "Reference = 1 (Index)",
-         y = "Mean staple crop prices (2015 USD per tonne)"
+         y = "Mean staple crop prices (2010 USD per tonne)"
          #title = "Main Points: Ag price impacts vs. Land CDR efficiency"
          ) +
     theme_bw() + theme0 + theme_leg +
@@ -271,7 +271,7 @@ MainFig6_AgPriceImplication <- function(){
   })  %>% bind_rows() -> M1_8
 
 
-  M1_8 %>% filter(term != "(Intercept)") %>%
+  M1_8 %>% #filter(term != "(Intercept)") %>%
     gather(element, value, estimate, std.error, adjR2, p.value, statistic) %>%
     spread(Model, value) %>%  arrange(element) %>%
     write.csv( paste0(outdir, "/", SIOutFolderName, "/SITable_AgPrice_LandCDREfficiency.csv") )

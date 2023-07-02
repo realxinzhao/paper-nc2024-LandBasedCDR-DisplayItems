@@ -350,7 +350,7 @@ MainFig3_LandCarbonPricingStrength <- function(){
       scale_x_continuous(expand = c(0, 0), limits = c(-1, 600), breaks = c(0, 150, 300, 450)) +
       scale_y_continuous(expand = c(0, 0), limits = c(-7, 0)) +
       geom_vline(xintercept = 0) +
-      labs(x = expression(paste(Mha, " ", yr^-1)), y = expression(paste(GtCO[2], " ", yr^-1)),
+      labs(x = "Mha", y = expression(paste(GtCO[2], " ", yr^-1)),
            linetype = "Scenario", color = "Scenario", fill = "Scenario") +
       theme_bw() + theme0 +
       scale_color_npg(name = "Scenario") +
@@ -425,7 +425,7 @@ MainFig3_LandCarbonPricingStrength <- function(){
 
       scale_x_continuous(expand = c(0, 0), limits = c(-5, 600), breaks = c(0, 150, 300, 450)) +
       scale_y_continuous(expand = c(0, 0), limits = c(-7, 0)) +
-      labs(x = expression(paste(Mha, " ", yr^-1)), y = expression(paste(GtCO[2], " ", yr^-1))) +
+      labs(x = "Mha", y = expression(paste(GtCO[2], " ", yr^-1))) +
       scale_color_npg(name = "Scenario", limits = c("No-LCP", "10%-LCP", "50%-LCP", "100%-LCP")) +
       scale_fill_npg(name = "Scenario", limits = c("No-LCP", "10%-LCP", "50%-LCP", "100%-LCP")) +
       scale_linetype_manual(values = c(3, 2, 1), name = "Land CDR efficiency") +
