@@ -78,10 +78,13 @@ MainFig5_LandRemovalEfficiency <-
     filter(LCT != "Reference") ->
     GCAMResults
 
-  GCAMResults %>%
+  LandToEMs_For %>% filter(sector == "LULUCF") %>%
     group_by(year, LandSupply, LCT) %>%
     summarise_at(vars(Mha:GtCO2), sum) %>%
-    mutate(CDR = GtCO2/Mha * 1000) %>% filter(year == 2100) -> A
+    mutate(CDR = GtCO2/Mha * 1000) %>%
+    filter(LCT != "10%-LCP", LCT != "No-LCP") %>%
+    filter(LCT != "Reference") %>%
+    group_by(year) %>% summarise(CDR = mean(CDR), n = n())
 
   GCAMResults %>% filter(!grepl("NonLand", sector)) %>%
     group_by(year, LandSupply, LCT) %>%
