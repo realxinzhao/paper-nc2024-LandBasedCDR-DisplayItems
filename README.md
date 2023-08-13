@@ -13,20 +13,20 @@ Haewon C. McJeon 	(May 2021 - July 2023)
 Matthew Binsted 	(August 2023 -)  
 
 # Instruction
-Download the entire R project and run `R/main.R`. The script will source two scripts `R/AR6/AR6_main.R` and `R/GCAM/GCAM_main.R` to generate figures or datasets related to AR6 scenario data and GCAM results, respectively. These scripts will furter source and run functions to generate figures and datasets, which will be saved in  `output/GCAM/Main` or `output/GCAM/SI`.
+Download the entire R project and run `R/main.R`. The script will source two scripts, `R/AR6/AR6_main.R` and `R/GCAM/GCAM_main.R`, to generate figures or datasets related to AR6 scenario data and GCAM results, respectively. These scripts will further  source and run functions to generate figures and datasets, which will be saved in  `output/GCAM/Main` or `output/GCAM/SI`.
 
 ## Package output and size
-The package output include figures and datasets (`output/*` included in this repo). The size of the output is about 50MB. The total size of the repo is about 100MB.  
+The package output includes figures and datasets (`output/*` included in this repo). The size of the output is about 50MB. The total size of the repo is about 100MB.  
 
 ## Package data
 `output/FigDataRDS/*.rds`: 	Intermediate data used for generating figures (20MB)
 `data/AR6/*`: 				Processed AR6 data
 `data/AR15/*`: 				Processed AR6 data
 `data/maps/*`: 				Mapping files
-*Note that the GCAM model and files needed for replicating the runs are archived at [realxinzhao/paper-LandBasedCDR-GCAM](https://github.com/realxinzhao/paper-LandBasedCDR-GCAM). The source database could be a few Gigabites so they are not included here.*
+*Note that the GCAM model and files needed for replicating the runs are archived at [realxinzhao/paper-LandBasedCDR-GCAM](https://github.com/realxinzhao/paper-LandBasedCDR-GCAM). The source database could be a few Gigabytes so they are not included here. However, the raw queried output datasets are archived at [zenodo.org/record/8244015](https://zenodo.org/record/8244015).*
 
 ## Functions
-Figures or figure sets are written in indenpendent functions (`R/AR6/*.R` and `R/GCAM/*.R`). Helper functions to help data processing are stored in `R/helper_func/*.R`. All functions are sourced in a nested structure so that the global environemnt is utilized.  
+Figures or figure sets are written in independent  functions (`R/AR6/*.R` and `R/GCAM/*.R`). Helper functions to help data processing are stored in `R/helper_func/*.R`. All functions are sourced in a nested structure so that the global environment is utilized.  
 
 
 ## R Session Information
