@@ -10,9 +10,9 @@ SIFigs_AR6Pathways_Summary <- function(){
 
   # Load data ----
   AR6_604 <- LoadFigData("AR6_604")
-
   SR15_r2 <- readxl::read_excel("data/SR15/iamc15_scenario_data_world_r2.0.xlsx", sheet = 2)
   SR15_r2 %>% distinct(Model, Scenario) -> MS_SR15
+
 
 
   AR6_604 %>% distinct(Model, Scenario, Pathway)  %>%
@@ -21,8 +21,11 @@ SIFigs_AR6Pathways_Summary <- function(){
                               mutate(MS_SR15 = paste0(Model, Scenario)) %>% pull(MS_SR15)),
                         "AR6 SR15", "AR6 New")) %>%
     group_by(DB, Model) %>% summarise(n = n(), .groups = "drop") %>%
-    arrange(DB, n) %>%
-    mutate(Model = factor(Model, levels = unique(B$Model))) %>%
+    arrange(DB, n)-> A
+
+  A %>% group_by(Model) %>% summarise(n = sum(n)) %>% arrange(n) -> B
+
+  A %>% mutate(Model = factor(Model, levels = unique(B$Model))) %>%
     arrange(DB) %>%
     ggplot() + #facet_wrap(~DB, scales = "free") +
     geom_bar(aes(x = Model, y = n, group = Model, fill = DB), alpha = 0.8,
@@ -35,6 +38,7 @@ SIFigs_AR6Pathways_Summary <- function(){
           axis.text.x = element_text(angle = 90, size = 12) ) +
     theme0 +
     coord_flip() -> model_count; model_count
+
 
   ## Generate a temp and CB histogram chart*** ----
   # AR6 < 1400 Gt 1030

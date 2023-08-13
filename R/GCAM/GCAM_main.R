@@ -16,10 +16,10 @@ library(cowplot)
 library(RColorBrewer)
 
 
-source("R/info.R")
-source("R/clean_GCAM_query.R")
-source("R/data_func.R");
-source("R/Figure_func.R")
+source("R/helper_func/info.R")
+source("R/helper_func/clean_GCAM_query.R")
+source("R/helper_func/data_func.R");
+source("R/helper_func/Figure_func.R")
 source("R/GCAM/GCAM_module_funcs.R")
 
 outdir <- "output/GCAM/"

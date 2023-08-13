@@ -1,6 +1,3 @@
-
-
-
 MainFig5_LandRemovalEfficiency <-
   function(PALPHA = 0.8, PSIZE = 1.8){
 

@@ -141,8 +141,6 @@ TCRP <- function(OUTDIR = "output/AR6/", CB_only = T){
   outdir <- OUTDIR
 
   ##Historical emissions in Fig.SPM10 ----
-  WPI_SPM10 <- readr::read_csv("data/AR6/IPCC_AR6/WPI_SPM10/Top_panel_HISTORY.CSV", comment = "#") %>%
-    gather_years() %>% select(-unit) %>% spread(variable, value)
 
   AR6_vettedC1_4 %>%
     filter(Var %in% c("Temp", "EM_CO2")) %>%
