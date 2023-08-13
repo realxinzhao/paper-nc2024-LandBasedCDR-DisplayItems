@@ -191,7 +191,7 @@ MainFig2_CarbonPrices <- function(){
     plot_layout(widths = c(1, 0.35),guides = 'collect') -> p
 
   p %>% Write_png(paste0(OutFolderName, "/MainFig2_CarbonPrices"), h = 2000, w = 5000,  r = 300)
-# Gexport ----
+# Export ----
 
 
   }
