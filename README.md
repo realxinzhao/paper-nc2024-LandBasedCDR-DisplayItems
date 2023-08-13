@@ -1,6 +1,15 @@
 # paper-LandBasedCDR-DisplayItems
-This repository includes an R project (R codes, functions, and data) for generating key figures in the paper: "Trade-Offs in Land-Based Carbon Removal Measures under 1.5°C and 2°C Futures"  
+This repository includes an R project (R codes, functions, and data) for generating key figures in the paper:  
+**Trade-Offs in Land-Based Carbon Removal Measures under 1.5°C and 2°C Futures**  
 
+Xin Zhao<sup>a*</sup>, Bryan K. Mignone<sup>a</sup>, Marshall A. Wise<sup>a</sup>, and Haewon C. McJeon<sup>a</sup>  
+<sup>a</sup>Joint Global Change Research Institute, Pacific Northwest National Laboratory  
+<sup>b</sup>ExxonMobil Research and Engineering Company  
+*Corresponding Author. Email: xin.zhao@pnnl.gov
+
+Project Manager
+Haewon C. McJeon 	(May 2021 - July 2023)
+Matthew Binsted 	(August 2023 -)
 
 # Instruction
 Download the entire R project and run `R/main.R`. The script will source two scripts `R/AR6/AR6_main.R` and `R/GCAM/GCAM_main.R` to generate figures or datasets related to AR6 scenario data and GCAM results, respectively. These scripts will furter source and run functions to generate figures and datasets, which will be saved in  `output/GCAM/Main` or `output/GCAM/SI`.
@@ -13,6 +22,7 @@ The package output include figures and datasets (`output/*` included in this rep
 `data/AR6/*`: 				Processed AR6 data
 `data/AR15/*`: 				Processed AR6 data
 `data/maps/*`: 				Mapping files
+*Note that the GCAM model and files needed for replicating the runs are archived at `realxinzhao/paper-LandBasedCDR-GCAM`. The source database could be a few Gigabites so they are not included here.*
 
 ## Functions
 Figures or figure sets are written in indenpendent functions (`R/AR6/*.R` and `R/GCAM/*.R`). Helper functions to help data processing are stored in `R/helper_func/*.R`. All functions are sourced in a nested structure so that the global environemnt is utilized.  
@@ -65,3 +75,6 @@ viridis_0.6.2      assertthat_0.2.1   rstudioapi_0.13    R6_2.5.0           nlme
 
 ![Fig. 6 Implications of land-based mitigation on crop prices](./output/GCAM/Main/MainFig6_AgPriceImplication.png)
 **Fig. 6 Implications of land-based mitigation on crop prices.** Panel (A) displays the staple crop price index (2020 = 1) in pathways explored in this study, with each dot representing the crop price in a projection year (i.e., 2025, 2050, 2100), distinguished by policy scenarios (subpanels), and scenarios (lines & colors). Staple crop in GCAM is an aggregation of wheat, corn, rice, other grains, and root & tuber (Table S2). Panel (B) shows the crop price index (2020 = 1) distributions across AR6 pathways (n = 28) and crops (n <= 4) by year and Carbon Budget (CB) subranges. AR6 crops include wheat, corn, rice, and soybean. The boxplots show the median (horizontal line within the boxes), interquartile range (boxes), and 5 – 95 percentile range (whiskers) by study period and CB subrange. The blue line represents the median value in the full CB range. Panel (C) shows the marginal effect on staple crop prices (dots) from a $100 (2010 USD) increase in the shadow price of carbon dioxide by sector. The coefficients correspond to Model 4 in Table S6. Error bars represent the 95% confidence intervals (CI) of each coefficient. Panel (D) shows the relationship (point) between staple crop price impact (reference = 1) and cropland impact (reference = 0 Mha) in 2100 across LCP scenarios (point colors) and policy scenarios (point shapes) by AR6 R10 regions (subpanels; see Table S1 for mappings). Linear trend lines (blue lines) and 95% CI (grey ribbons) are added for each region (subpanel). Data source: GCAM simulation results and AR6 Scenario Database.  
+
+#Acknowledgments
+The PNNL authors acknowledge support from the ExxonMobil Technology and Engineering Company. The views and opinions expressed are those of the authors alone. We appreciate Kate Calvin, Ben Bond-Lamberty, Yang Ou, Jay Fuhrman, Dalei Hao, Patrick O’Rourke, Brinda Yarlagadda, Ryna Cui, Xueyuan Gao, Pralit Patel, Matthew Binsted, Alan Di Vittorio, Kanishka Narayan, and Page Kyle for their valuable comments and suggestions.
