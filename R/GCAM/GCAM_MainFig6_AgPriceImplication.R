@@ -136,13 +136,13 @@ MainFig6_AgPriceImplication <- function(){
 
   data.frame(method = "Method1: Forest", price = 263, element = "LULUCF") %>%
   mutate(element = factor(element, levels = c("AllLand", "BECCS", "LULUCF"),
-                          labels = c("Land-based BECCS & LULUCF", "Land-based BECCS", "LULUCF vs. Forest"))) ->
+                          labels = c("Land-based BECCS & LULUCF", "Land-based BECCS", "LULUCF"))) ->
     df2
 
   df_LRE_Agprice %>% select(LCT, LandSupply, AllLand:method, price, price2100) %>%
     gather(element, value, AllLand:LULUCF) %>%
     mutate(element = factor(element, levels = c("AllLand", "BECCS", "LULUCF"),
-                            labels = c("Land-based BECCS & LULUCF", "Land-based BECCS", "LULUCF vs. Forest"))) %>%
+                            labels = c("Land-based BECCS & LULUCF", "Land-based BECCS", "LULUCF"))) %>%
     filter(NegForLand == F) %>%
     filter(value < 0) %>%
     # more refining
