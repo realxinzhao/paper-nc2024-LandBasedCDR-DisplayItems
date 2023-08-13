@@ -1,5 +1,6 @@
 # paper-LandBasedCDR-DisplayItems
 This repository includes an R project (R codes, functions, and data) for generating key figures in the paper:  
+  
 **Trade-Offs in Land-Based Carbon Removal Measures under 1.5°C and 2°C Futures**  
 
 Xin Zhao<sup>a*</sup>, Bryan K. Mignone<sup>a</sup>, Marshall A. Wise<sup>a</sup>, and Haewon C. McJeon<sup>a</sup>  
@@ -7,9 +8,9 @@ Xin Zhao<sup>a*</sup>, Bryan K. Mignone<sup>a</sup>, Marshall A. Wise<sup>a</sup
 <sup>b</sup>ExxonMobil Research and Engineering Company  
 *Corresponding Author. Email: xin.zhao@pnnl.gov
 
-Project Manager
-Haewon C. McJeon 	(May 2021 - July 2023)
-Matthew Binsted 	(August 2023 -)
+Project Manager  
+Haewon C. McJeon 	(May 2021 - July 2023)  
+Matthew Binsted 	(August 2023 -)  
 
 # Instruction
 Download the entire R project and run `R/main.R`. The script will source two scripts `R/AR6/AR6_main.R` and `R/GCAM/GCAM_main.R` to generate figures or datasets related to AR6 scenario data and GCAM results, respectively. These scripts will furter source and run functions to generate figures and datasets, which will be saved in  `output/GCAM/Main` or `output/GCAM/SI`.
@@ -22,7 +23,7 @@ The package output include figures and datasets (`output/*` included in this rep
 `data/AR6/*`: 				Processed AR6 data
 `data/AR15/*`: 				Processed AR6 data
 `data/maps/*`: 				Mapping files
-*Note that the GCAM model and files needed for replicating the runs are archived at `realxinzhao/paper-LandBasedCDR-GCAM`. The source database could be a few Gigabites so they are not included here.*
+*Note that the GCAM model and files needed for replicating the runs are archived at [realxinzhao/paper-LandBasedCDR-GCAM](https://github.com/realxinzhao/paper-LandBasedCDR-GCAM). The source database could be a few Gigabites so they are not included here.*
 
 ## Functions
 Figures or figure sets are written in indenpendent functions (`R/AR6/*.R` and `R/GCAM/*.R`). Helper functions to help data processing are stored in `R/helper_func/*.R`. All functions are sourced in a nested structure so that the global environemnt is utilized.  
