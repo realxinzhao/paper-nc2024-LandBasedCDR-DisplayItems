@@ -216,9 +216,9 @@ NonCO2Check %>% filter(sector != "Other GHGs_UnMGMTLand") %>%
         panel.spacing.x = unit(0.5, "lines")) -> A2; A2
 
 
-(A2 + labs(title = "(A) Cumulative non-carbon GHG emissions in 2020 - 2100") +
+(A2 + labs(title = "(A) Cumulative non-carbon dioxide GHG emissions in 2020 - 2100") +
     theme(plot.title = element_text(hjust = 0, face = "bold")) ) /
-  (A1  +  labs(title = "(B) Annual non-carbon GHG emissions") +
+  (A1  +  labs(title = "(B) Annual non-carbon dioxide GHG emissions") +
      theme(plot.title = element_text(hjust = 0, face = "bold")) )+
   plot_layout(heights = c(0.4, 1),guides = 'collect') -> p
 
