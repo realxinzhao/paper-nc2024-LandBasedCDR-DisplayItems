@@ -1,5 +1,5 @@
 # paper-LandBasedCDR-DisplayItems
-This repository includes an R project (R codes, functions, and data) for generating key figures in the paper:  
+This repository includes an R project (R codes, functions, and data) for generating key figures in the paper (under review at ncomm):  
   
 **Trade-Offs in Land-Based Carbon Removal Measures under 1.5°C and 2°C Futures**  
 
@@ -55,7 +55,7 @@ viridis_0.6.2      assertthat_0.2.1   rstudioapi_0.13    R6_2.5.0           nlme
 ```
 
 # Key Figures
-![Fig. 1 Contributions of land-based carbon dioxide removal measures](./output/GCAM/Main/MainFig1_BECCS_LULUCF_FFI_AR6_GCAM1.png)
+![Fig. 1 Contributions of land-based carbon dioxide removal measures](./output/GCAM/Main/MainFig1_BECCS_LULUCF_FFI_AR6_GCAM3.png)
 **Fig.1 Contributions of land-based carbon dioxide removal measures.** The left panel shows the relationship between global cumulative CO2 removals/emissions in 2020 – 2100 for LULUCF and BECCS, while the right panel shows the relationship between LULUCF and Energy and Industrial Process (EIP) emissions, projected by climate change mitigation pathways. Each dot represents a projection from an IPCC AR6 pathway (square) or mitigation pathways generated in the present study using GCAM (round). The square dots (n = 604) in both panels are projections from IPCC AR6 2 °C pathways (in C1 – C4 categories) and with Carbon Budgets (CBs) in [175, 1475] GtCO2, distinguished by CB subranges (filled color; 500 and 1150 are interquartile values).  
 
 ![Fig. 2 Carbon prices in mitigation pathways](./output/GCAM/Main/MainFig2_CarbonPrices.png)
@@ -78,4 +78,4 @@ viridis_0.6.2      assertthat_0.2.1   rstudioapi_0.13    R6_2.5.0           nlme
 **Fig. 6 Implications of land-based mitigation on crop prices.** Panel (A) displays the staple crop price index (2020 = 1) in pathways explored in this study, with each dot representing the crop price in a projection year (i.e., 2025, 2050, 2100), distinguished by policy scenarios (subpanels), and scenarios (lines & colors). Staple crop in GCAM is an aggregation of wheat, corn, rice, other grains, and root & tuber (Table S2). Panel (B) shows the crop price index (2020 = 1) distributions across AR6 pathways (n = 28) and crops (n <= 4) by year and Carbon Budget (CB) subranges. AR6 crops include wheat, corn, rice, and soybean. The boxplots show the median (horizontal line within the boxes), interquartile range (boxes), and 5 – 95 percentile range (whiskers) by study period and CB subrange. The blue line represents the median value in the full CB range. Panel (C) shows the marginal effect on staple crop prices (dots) from a $100 (2010 USD) increase in the shadow price of carbon dioxide by sector. The coefficients correspond to Model 4 in Table S6. Error bars represent the 95% confidence intervals (CI) of each coefficient. Panel (D) shows the relationship (point) between staple crop price impact (reference = 1) and cropland impact (reference = 0 Mha) in 2100 across LCP scenarios (point colors) and policy scenarios (point shapes) by AR6 R10 regions (subpanels; see Table S1 for mappings). Linear trend lines (blue lines) and 95% CI (grey ribbons) are added for each region (subpanel). Data source: GCAM simulation results and AR6 Scenario Database.  
 
 #Acknowledgments
-The PNNL authors acknowledge support from the ExxonMobil Technology and Engineering Company. The views and opinions expressed are those of the authors alone. We appreciate Kate Calvin, Ben Bond-Lamberty, Yang Ou, Jay Fuhrman, Dalei Hao, Patrick O’Rourke, Brinda Yarlagadda, Ryna Cui, Xueyuan Gao, Pralit Patel, Matthew Binsted, Alan Di Vittorio, Kanishka Narayan, and Page Kyle for their valuable comments and suggestions.
+The PNNL authors acknowledge support from the ExxonMobil Technology and Engineering Company. The views and opinions expressed are those of the authors alone. We appreciate Kate Calvin, Ben Bond-Lamberty, Matthew Binsted, Yang Ou, Jay Fuhrman, Dalei Hao, Patrick O’Rourke, Brinda Yarlagadda, Ryna Cui, Xueyuan Gao, Pralit Patel, Alan Di Vittorio, Kanishka Narayan, and Page Kyle for their valuable comments and suggestions.
