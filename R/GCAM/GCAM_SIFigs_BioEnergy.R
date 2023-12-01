@@ -155,10 +155,7 @@ SIFigs_BioEnergy <- function(){
     scale_linetype_manual(values = c(1, 2)) +
     scale_size_manual(values = c(0.5, 0.3)) +
     #scale_fill_brewer(palette = "RdYlGn", name = "Demand sector", direction = -1) +
-    scale_fill_brewer(palette = "RdYlGn", name = "Sector", direction = -1,
-                      limits = c(
-                        "Demand: Electricity", "Demand: Refining", "Demand: Gas", "Demand: Hydrogen", "Demand: Final energy"
-                      )) +
+    scale_fill_brewer(palette = "Set1", name = "Sector") +
     theme_bw() + theme0 +
     theme(axis.text.x = element_text(angle = 90),
           panel.grid = element_blank(),
@@ -177,6 +174,19 @@ SIFigs_BioEnergy <- function(){
     mutate(value = if_else(CCS == "CCS", value, -value)) %>%
     spread(CCS, value) %>%
     mutate(CCSShare = CCS / (CCS - NoCCS)) -> BiomassALL_CCSShare
+
+  BiomassALL %>%
+    filter(DS == "demand") %>%
+    mutate(value = value / 1000) %>%
+    Agg_reg(sector, CCS) %>%
+    group_by_at(vars(-year,-value)) %>%
+    Fill_annual(CUMULATIVE = T) %>% ungroup() %>%
+    group_by(scenario) %>%
+    filter(year == unique(last(year))) %>% ungroup() %>%
+    mutate(value = if_else(CCS == "CCS", value, -value)) %>%
+    spread(CCS, value) %>% replace_na(list(CCS = 0)) %>%
+    mutate(CCSShare = CCS / (CCS - NoCCS)) -> BiomassALL_CCSShare_Sector
+
 
   BiomassALL %>%
     filter(DS == "demand") %>%
@@ -202,13 +212,17 @@ SIFigs_BioEnergy <- function(){
               hjust = 0.5, size = 5.5, color = "black", fontface = 4
     ) +
 
+    geom_text(data = BiomassALL_CCSShare_Sector %>% proc_scen() %>%
+                mutate(y = as.numeric(sector), y = (-(y - min(y) ) -1) * .8   ), #%>% distinct(sector, y)
+              aes(x = LCT, y = y, label = paste0(round(CCSShare * 100,0), "%"), color = sector), size = 3.5, nudge_y = 0.1 ) +
+
     labs(x = "Land mitigation policy", y = "1000 EJ", alpha = "CCS technology", linetype = "CCS technology") +
     scale_alpha_manual(values = c(0.8, 1)) +
     scale_linetype_manual(values = c(1, 2)) +
-    scale_fill_brewer(palette = "RdYlGn", name = "Sector", direction = -1,
-                      limits = c(
-                        "Demand: Electricity", "Demand: Refining", "Demand: Gas", "Demand: Hydrogen", "Demand: Final energy"
-                      )) +
+    scale_color_brewer(palette = "Set1", name = "CCS tech. share"
+                       ) +
+    scale_fill_brewer(palette = "Set1",  name = "Sector"# limits = c("Demand: Electricity", "Demand: Refining", "Demand: Gas", "Demand: Hydrogen", "Demand: Final energy")
+                      ) +
     theme_bw() + theme0 +
     theme(axis.text.x = element_text(angle = 40, hjust = 0.9, vjust = 1), legend.text.align = 0,
           axis.title.x = element_blank(),

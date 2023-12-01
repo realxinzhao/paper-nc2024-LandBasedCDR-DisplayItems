@@ -62,7 +62,7 @@ data %>%
        ) +
   scale_alpha_manual(values = c(0.8, 1)) +
   scale_linetype_manual(values = c(1, 2)) +
-  scale_fill_brewer(palette = "RdYlGn", name = "Sector", direction = -1,
+  scale_fill_brewer(palette = "Set1", name = "Sector", direction = -1,
                     limits = c(
                       "Demand: Electricity", "Demand: Refining", "Demand: Gas", "Demand: Hydrogen", "Demand: Final energy"
                     )) +
@@ -95,7 +95,7 @@ data %>%  mutate(value = if_else(CCS == "CCS", value, -value)) %>%
   ) +
   scale_alpha_manual(values = c(0.8, 1)) +
   scale_linetype_manual(values = c(1, 2)) +
-  scale_fill_brewer(palette = "RdYlGn", name = "Sector", direction = -1,
+  scale_fill_brewer(palette = "Set1", name = "Sector", direction = -1,
                     limits = c(
                       "Demand: Electricity", "Demand: Refining", "Demand: Gas", "Demand: Hydrogen", "Demand: Final energy"
                     )) +
@@ -134,7 +134,7 @@ data %>%
   scale_alpha_manual(values = c(0.8, 1)) +
   scale_linetype_manual(values = c(1, 2)) +
   scale_color_manual(values = "blue") +
-  scale_fill_brewer(palette = "RdYlGn", name = "Sector", direction = -1,
+  scale_fill_brewer(palette = "Set1", name = "Sector", direction = -1,
                     limits = c(
                       "Demand: Electricity", "Demand: Refining", "Demand: Gas", "Demand: Hydrogen", "Demand: Final energy"
                     )) +
@@ -151,6 +151,7 @@ A2 %>% Write_png(paste0(OutFolderName,"/SIFig_GCAM_PrimaryBiomassCCS_PanelA_test
 
 
 # testing ggpattern
+# package is not stable
 # note that this may take very long and likely won't work for facets
 library(ggpattern)
 
@@ -170,7 +171,7 @@ library(ggpattern)
     labs(x = "Land mitigation policy", y = "1000 EJ", linetype = "CCS technology",
          pattern = "CCS technology" ) +
     scale_pattern_manual(values = c(NoCCS = "stripe", CCS = "none")) +
-    scale_fill_brewer(palette = "RdYlGn", name = "Sector", direction = -1,
+    scale_fill_brewer(palette = "Set1", name = "Sector", direction = -1,
                       limits = c(
                         "Demand: Electricity", "Demand: Refining", "Demand: Gas", "Demand: Hydrogen", "Demand: Final energy"
                       )) +
