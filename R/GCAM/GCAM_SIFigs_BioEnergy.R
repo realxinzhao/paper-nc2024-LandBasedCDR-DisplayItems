@@ -134,26 +134,26 @@ SIFigs_BioEnergy <- function(){
 
 
 
-
-
-
   BiomassALL %>%
     filter(DS == "demand") %>%
     Agg_reg(CCS, sector) %>%
-    mutate(value = if_else(CCS == "CCS", value, -value)) %>%
+    #mutate(value = if_else(CCS == "CCS", value, -value)) %>%
     #left_join(NZ_PeakYear, by = "scenario") %>%
     #filter(!(!is.na(NZyear) & year > NZyear)) %>% select(-NZyear) %>%
     proc_scen() %>%
     ggplot +   facet_grid( LandSupply ~ LCT) +
     guides(fill = guide_legend(order = 1),
-           alpha = guide_legend(order = 2)) +
+           linetype = guide_legend(order = 2),
+           alpha = guide_legend(order = 3)) +
     geom_hline(yintercept = 0) +
-    geom_bar(aes(x = year, y = value, fill = sector, alpha = CCS),
-             stat = "identity", position = "stack", color = "black"
+    geom_bar(aes(x = year, y = value, fill = sector, alpha = CCS, linetype = CCS, size = CCS),
+             stat = "identity", position = "stack", color = "black",
     ) +
-    labs(x = "Year", y =  expression(paste(EJ, " ", yr^-1)), alpha = "CCS technology") +
-    #scale_fill_npg(name = "Sector") +
-    scale_alpha_manual(values = c(1, 0.5)) +
+    labs(x = "Year", y =  expression(paste(EJ, " ", yr^-1)), alpha = "CCS technology", size = "CCS technology",
+         linetype = "CCS technology") +
+    scale_alpha_manual(values = c(0.8, 1)) +
+    scale_linetype_manual(values = c(1, 2)) +
+    scale_size_manual(values = c(0.5, 0.3)) +
     #scale_fill_brewer(palette = "RdYlGn", name = "Demand sector", direction = -1) +
     scale_fill_brewer(palette = "RdYlGn", name = "Sector", direction = -1,
                       limits = c(
@@ -184,29 +184,27 @@ SIFigs_BioEnergy <- function(){
     Agg_reg(CCS, sector) %>%
     group_by_at(vars(-year,-value)) %>%
     Fill_annual(CUMULATIVE = T) %>% ungroup() %>%
-    #left_join(NZ_PeakYear, by = "scenario") %>%
-    #filter(!(!is.na(NZyear) & year > NZyear)) %>% select(-NZyear) %>%
     group_by(scenario) %>%
     filter(year == unique(last(year))) %>% ungroup() %>%
-    mutate(value = if_else(CCS == "CCS", value, -value)) %>%
+    #mutate(value = if_else(CCS == "CCS", value, -value)) %>%
     proc_scen() %>%
     ggplot +   facet_grid( ~LandSupply) +
     guides(fill = guide_legend(order = 1),
-           alpha = guide_legend(order = 2)) +
+           linetype = guide_legend(order = 2),
+           alpha = guide_legend(order = 3)) +
     geom_hline(yintercept = 0) +
-    geom_bar(aes(x = LCT, y = value, fill = sector, alpha = CCS),
-             stat = "identity", position = "stack",
+    geom_bar(aes(x = LCT, y = value, fill = sector, alpha = CCS, linetype = CCS),
+             stat = "identity", position = "stack", size = 0.5,
              color = "black") +
 
     geom_text(data =  BiomassALL_CCSShare %>% proc_scen(),
-              aes(x = LCT, y = 13, label = paste0(round(CCSShare * 100,0), "%")),
+              aes(x = LCT, y = 14, label = paste0(round(CCSShare * 100,0), "%")),
               hjust = 0.5, size = 5.5, color = "black", fontface = 4
     ) +
 
-    labs(x = "Land mitigation policy", y = "1000 EJ", alpha = "CCS technology") +
-    scale_alpha_manual(values = c(1, 0.5)) +
-    # scale_fill_brewer(palette = "RdYlGn",
-    #                   name = "Demand sector", direction = 1) +
+    labs(x = "Land mitigation policy", y = "1000 EJ", alpha = "CCS technology", linetype = "CCS technology") +
+    scale_alpha_manual(values = c(0.8, 1)) +
+    scale_linetype_manual(values = c(1, 2)) +
     scale_fill_brewer(palette = "RdYlGn", name = "Sector", direction = -1,
                       limits = c(
                         "Demand: Electricity", "Demand: Refining", "Demand: Gas", "Demand: Hydrogen", "Demand: Final energy"
@@ -225,9 +223,11 @@ SIFigs_BioEnergy <- function(){
        theme(plot.title = element_text(hjust = 0, face = "bold"), legend.position = "none") )+
     plot_layout(heights = c(0.4, 1),guides = 'collect') -> p
 
-  p %>% Write_png(paste0(OutFolderName,"/SIFig_GCAM_PrimaryBiomassCCS"), h = 4500, w = 4400,  r = 300)
+  p %>% Write_png(paste0(OutFolderName,"/SIFig_GCAM_PrimaryBiomassCCS_update"), h = 4500, w = 4400,  r = 300)
 
-
+  # Note that we tested different versions of this SI figure
+  # please find the code here
+  # source("R/GCAM/GCAM_SIFigs_BioEnergy_AddonTests.R")
 
 
 
