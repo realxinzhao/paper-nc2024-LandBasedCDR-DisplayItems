@@ -142,7 +142,6 @@ MainFig2_CarbonPrices <- function(){
       legend.box.just = "left",
           panel.grid = element_blank())-> AR6_CP;AR6_CP
 
-
     EMs_mitigation_CO2Price2010 %>%
     filter(year %in% c(2025, 2050, 2100)) %>%
     mutate(year = as.character(year)) %>%
@@ -190,8 +189,31 @@ MainFig2_CarbonPrices <- function(){
        theme(plot.title = element_text(hjust = 0, face = "bold") ) ) +
     plot_layout(widths = c(1, 0.35),guides = 'collect') -> p
 
+    # Export ----
   p %>% Write_png(paste0(OutFolderName, "/MainFig2_CarbonPrices"), h = 2000, w = 5000,  r = 300)
-# Export ----
+
+
+  # Save source data ----
+  DF_TS %>%
+    filter(!Pathway %in% (ZeroCPPathway %>% pull)) %>%
+    filter(year %in% c(2025, 2050, 2100), Var == "Price_CO2") %>%
+    transmute(pathway = Pathway, model = Model, scenario = Scenario, year,
+              CarbonBudget_CB_GtCO2 = EM_CO2_2100_cut, variable = Variable, unit = Unit) %>%
+    SaveFigData("Fig2PanelB_pathway", .SourceForPub = T)
+
+  DF_TS1 %>% rename(CarbonBudget_CB_GtCO2 = EM_CO2_2100_cut) %>%
+    bind_rows(
+      DF_TS2 %>% mutate(
+        CarbonBudget_CB_GtCO2 = "Full:[175,1475]"
+      )
+    ) %>% SaveFigData("Fig2PanelB_boxplot", .SourceForPub = T)
+
+  EMs_mitigation_CO2Price2010 %>%
+    filter(year %in% seq(2025, 2100, 5)) %>%
+    transmute(Policy_Scenario = LandSupply, LCP_scenario = LCT, Sector_market = market, year,
+              value = CO2Price2010, unit = "2010$ per tCO2") %>%
+    SaveFigData("Fig2PanelA", .SourceForPub = T)
+
 
 
   }

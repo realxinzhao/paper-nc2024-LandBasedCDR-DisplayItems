@@ -1,14 +1,116 @@
 MainFig3_LandCarbonPricingStrength <- function(){
 
-
-
   outdir <- "output/GCAM/"
   OutFolderName <- "Main"
   dir.create(file.path(outdir, OutFolderName), showWarnings = F)
 
+  # Save source data ----
+  Fig_CEM_decompose_BECCS_LUC <- LoadFigData("CEM_decompose_BECCS_LUC")
+
+  Fig_CEM_decompose_BECCS_LUC %>%
+    transmute(Policy_Scenario = LandSupply, LCP_scenario = LCT, Sector = sector, year,
+              value, unit = "GtCO2 per yr") %>% spread(Sector, value) %>%
+    SaveFigData("Figs3n4PanelB", .SourceForPub = T)
+
+  Fig_CEM_decompose_BECCS_LUC %>%
+    group_by_at(vars(-value, -year)) %>%
+    Fill_annual(CUMULATIVE = T) %>% ungroup() %>%
+    group_by(scenario) %>%
+    filter(year == unique(last(year))) %>% ungroup() %>%
+    transmute(Policy_Scenario = LandSupply, LCP_scenario = LCT, Sector = sector, year,
+              value, unit = "GtCO2 per yr") %>% spread(Sector, value) %>%
+    SaveFigData("Figs3n4PanelA", .SourceForPub = T)
+
+
+  LoadFigData("BiomassALL_PrimaryEnergyBal") -> BiomassALL
+
+  BiomassALL %>%
+    mutate(sector = factor(sector,
+                           levels = c("Supply: Purpose-grown","Supply: Residue", "Supply: MSW",
+                                      "Demand: Final energy",  "Demand: Gas", "Demand: Hydrogen", "Demand: Refining", "Demand: Electricity"),
+                           labels = c("Supply: Purpose-grown","Supply: Residue", "Supply: MSW",
+                                      "Demand: Final energy",  "Demand: Gas & Hydrogen", "Demand: Gas & Hydrogen", "Demand: Refining", "Demand: Electricity"
+                           ) ) ) %>%
+    group_by_at(vars(-value)) %>%
+    summarise(value = sum(value)) %>% ungroup() %>%
+    replace_na(list(CCS = "CCS")) %>%
+    mutate(CCS = factor(CCS,
+                        levels = c("CCS", "NoCCS"),
+                        labels = c("Demand: with CCS tech.", "Demand: without CCS tech.") ))->
+    BiomassALL1
+
+  BiomassALL1 %>% mutate(value = if_else(DS == "demand", -value, value)) %>%
+    mutate(value = value / 81) %>%
+    Agg_reg(sector, LandSupply, LCT) %>%
+    group_by_at(vars(-year,-value)) %>%
+    Fill_annual(CUMULATIVE = T) %>% ungroup() %>%
+    group_by(scenario, sector, LandSupply, LCT) %>%
+    filter(year == unique(last(year))) %>% ungroup() %>%
+    transmute(Policy_Scenario = LandSupply, LCP_scenario = LCT, Sector = sector,
+              value, unit = "EJ per yr") %>% spread(Sector, value) %>%
+    SaveFigData("Figs3n4PanelC", .SourceForPub = T)
+
+
+
+  LoadFigData("LandALL")  -> LandALL
+
+
+  LandALL %>%
+    Agg_reg(land, LCT, LandSupply) %>%
+    group_by(scenario, land,LCT, LandSupply) %>%
+    Fill_annual %>% filter(year >= 2019) %>% ungroup() %>%
+    group_by_at(vars(-year, -value)) %>%
+    mutate(value = value - first(value)) %>%  ungroup() %>%
+    filter(year != 2019) %>%
+    filter(!grepl("Rock|Urban", land)) %>%
+    mutate(land = gsub("- Staples", "- Others", land)) %>%
+    mutate(land = gsub(" - Unmanaged| - Managed", "", land)) %>%
+    mutate(land = replace(land, land %in% c("Grassland", "Shrubland"), "Other natural")) %>%
+    mutate(land = gsub(" - Energy", ": Energy", land)) %>%
+    mutate(land = gsub(" - Others", ": NonEnergy", land)) %>%
+    group_by_at(vars(-value)) %>% summarise(value = sum(value), .groups = "drop") %>%
+    group_by_at(vars(-year, -value)) %>%
+    summarise(Mean = mean(value),
+              `2050` = value[year == 2050],
+              `2100` = value[year == 2100]) %>% ungroup() %>%
+    gather(year, value, Mean:`2100`) %>%
+    mutate(year = factor(year, levels = c("2050", "Mean", "2100"))) %>%
+    mutate(land = factor(land, levels = c("Cropland: NonEnergy", "Cropland: Energy",
+                                          "Forest", "Other natural","Pasture" ))) %>%
+    transmute(Policy_Scenario = LandSupply, LCP_scenario = LCT, land, year,
+              value, unit = "Mha") %>% spread(land, value) %>%
+    SaveFigData("Figs3n4PanelD", .SourceForPub = T)
+
+
+  LoadFigData("LandToEMsTotal")  -> LandToEMsTotal
+
+  LandToEMsTotal %>%
+    transmute(Policy_Scenario = LandSupply, LCP_scenario = LCT, Land_Mha = Mha, CDR_GtCO2PerYr = GtCO2,
+              efficiency = CDR_GtCO2PerYr / Land_Mha * 1000) %>%
+    SaveFigData("Figs3n4PanelE", .SourceForPub = T)
+
+
+  LandToEMs_decompose <- LoadFigData("LandToEMs_decompose")
+  LandToEMs_decomposePoint <- LoadFigData("LandToEMs_decomposePoint")
+
+  LandToEMs_decompose  %>%
+    transmute(Policy_Scenario = LandSupply, LCP_scenario = LCT, `Land CDR efficiency`,
+              Point = Arrow, Cum_Land_Mha = Mha, Cum_CDR_GtCO2PerYr = GtCO2) %>%
+    arrange(Point) %>%
+    SaveFigData("Figs3n4PanelF_Line", .SourceForPub = T)
+
+  LandToEMs_decomposePoint %>%
+    transmute(Policy_Scenario = LandSupply, LCP_scenario = LCT, `Land CDR efficiency`,
+              Point = Arrow, Cum_Land_Mha = Mha, Cum_CDR_GtCO2PerYr = GtCO2) %>%
+    arrange(Point) %>%
+    SaveFigData("Figs3n4PanelF_Point", .SourceForPub = T)
+
+
     #FigA & B----
     # Load data
     Fig_CEM_decompose_BECCS_LUC <- LoadFigData("CEM_decompose_BECCS_LUC") %>% filter(LandSupply == "2C Main")
+
+
 
     Fig_CEM_decompose_BECCS_LUC %>%
       filter(LCT %in% c("No-LCP", "50%-LCP", "100%-LCP")) %>%
@@ -21,15 +123,12 @@ MainFig3_LandCarbonPricingStrength <- function(){
       filter(value == max) %>% ungroup() -> NZyears
 
 
-
     br_pal1 <- brewer.pal(7,"RdBu") %>% rev;
     br_pal0 <- brewer.pal(11,"BrBG");
 
     mypal <- c( br_pal1[c(1:3)], #"grey85",
                 br_pal0[5],
                 br_pal1[c(5:7)]);
-
-
 
     Fig_CEM_decompose_BECCS_LUC %>%
       filter(LCT %in% c("No-LCP", "50%-LCP", "100%-LCP")) %>%
@@ -159,7 +258,9 @@ MainFig3_LandCarbonPricingStrength <- function(){
     #FigC Biomass ----
 
     LoadFigData("BiomassALL_PrimaryEnergyBal") %>%
-      filter(LandSupply == "2C Main")-> BiomassALL
+      filter(LandSupply == "2C Main") -> BiomassALL
+
+
 
     BiomassALL %>%
       mutate(sector = factor(sector,

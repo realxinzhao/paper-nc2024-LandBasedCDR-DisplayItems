@@ -15,7 +15,8 @@ MainFig1_LandCDR_AR6GCAM <-
 
 
   if (ADD_GCAM == T) {
-    EMs <- LoadFigData("GCAM_EMs")
+    EMs <- LoadFigData("GCAM_EMs") %>% filter(LandSupply %in% c("A/R-Focused", "2C Main") ) %>%
+      filter(!(LandSupply == "2C Main" & LCT != "No-LCP"))
 
     EMs %>% spread(GHG, value) -> EMS_LUC_FFI_BECCS_GCAM1
 

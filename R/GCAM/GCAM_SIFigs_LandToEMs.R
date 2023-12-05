@@ -41,7 +41,7 @@ SIFigs_LandToEMs <- function(){
     scale_x_continuous(expand = c(0, 0), limits = c(0, 1100)) +
     scale_y_continuous(expand = c(0, 0), limits = c(-10.5, 0)) +
     geom_vline(xintercept = 0) +
-    labs(x = expression(paste(Mha, " ", yr^-1)), y = expression(paste(GtCO[2], " ", yr^-1)),
+    labs(x = expression(paste(Mha)), y = expression(paste(GtCO[2], " ", yr^-1)),
          linetype = "Scenario", color = "Scenario", fill = "Scenario") +
     theme_bw() + theme0 +
     scale_color_npg(name = "Scenario") +
@@ -53,7 +53,6 @@ SIFigs_LandToEMs <- function(){
 
 
   LandToEMs_decompose <- LoadFigData("LandToEMs_decompose")
-  LandToEMs_decomposePoint <- LoadFigData("LandToEMs_decomposePoint")
 
   ggplot() +
     guides(colour = guide_legend(order = 1),
@@ -121,7 +120,7 @@ SIFigs_LandToEMs <- function(){
 
     scale_x_continuous(expand = c(0, 0), limits = c(-5, 1100)) +
     scale_y_continuous(expand = c(0, 0), limits = c(-10.5, 2)) +
-    labs(x = expression(paste(Mha, " ", yr^-1)), y = expression(paste(GtCO[2], " ", yr^-1))) +
+    labs(x = expression(paste(Mha)), y = expression(paste(GtCO[2], " ", yr^-1))) +
     scale_color_npg(name = "Scenario", limits = c("No-LCP", "10%-LCP", "50%-LCP", "100%-LCP", "Reference")) +
     scale_linetype_manual(values = c(3, 2, 1), name = "Land CDR efficiency") +
     theme_bw() + theme0 +
@@ -148,6 +147,8 @@ SIFigs_LandToEMs <- function(){
   "LULUCF vs. Forest & Natural" -> LULUCF_FOR
 
   LoadFigData("LandToEMsTotal_ForNat") -> LandToEMsTotal
+  LandToEMs_decompose <- LoadFigData("LandToEMs_decompose_ForNat")
+
 
   ggplot() +
     facet_wrap(~LandSupply, nrow = 1) +
@@ -179,7 +180,7 @@ SIFigs_LandToEMs <- function(){
     scale_x_continuous(expand = c(0, 0), limits = c(0, 1100)) +
     scale_y_continuous(expand = c(0, 0), limits = c(-10.5, 0)) +
     geom_vline(xintercept = 0) +
-    labs(x = expression(paste(Mha, " ", yr^-1)), y = expression(paste(GtCO[2], " ", yr^-1)),
+    labs(x = expression(paste(Mha)), y = expression(paste(GtCO[2], " ", yr^-1)),
          linetype = "Scenario", color = "Scenario", fill = "Scenario") +
     theme_bw() + theme0 +
     scale_color_npg(name = "Scenario") +
@@ -256,7 +257,7 @@ SIFigs_LandToEMs <- function(){
 
     scale_x_continuous(expand = c(0, 0), limits = c(-5, 1100)) +
     scale_y_continuous(expand = c(0, 0), limits = c(-10.5, 2)) +
-    labs(x = expression(paste(Mha, " ", yr^-1)), y = expression(paste(GtCO[2], " ", yr^-1))) +
+    labs(x = expression(paste(Mha)), y = expression(paste(GtCO[2], " ", yr^-1))) +
     scale_color_npg(name = "Scenario", limits = c("No-LCP", "10%-LCP", "50%-LCP", "100%-LCP", "Reference")) +
     scale_linetype_manual(values = c(3, 2, 1), name = "Land CDR efficiency") +
     theme_bw() + theme0 +

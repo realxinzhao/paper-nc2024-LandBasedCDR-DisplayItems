@@ -42,6 +42,9 @@ MainFig6_AgPriceImplication()
 source("R/GCAM/GCAM_SIFigs_LandToEMs.R")
 SIFigs_LandToEMs()
 
+source("R/GCAM/GCAM_SIFigs_LandToEMs_DeeperDecompose.R")
+SIFigs_LandToEMs_DeeperDecompose()
+
 source("R/GCAM/GCAM_SIFigs_EmissionDecompose.R")
 SIFigs_EmissionDecompose()
 
@@ -50,6 +53,9 @@ SIFigs_LandProd()
 
 source("R/GCAM/GCAM_SIFigs_BioEnergy.R")
 SIFigs_BioEnergy()
+
+source("R/GCAM/GCAM_SIFigs_BioEnergy_Addon_LandToBECCS.R")
+SIFigs_BioEnergy_addon_LandToBECCS()
 
 
 

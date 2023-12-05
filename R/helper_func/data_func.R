@@ -1,9 +1,14 @@
-SaveFigData <- function(.DF, .NAME){
+SaveFigData <- function(.DF, .NAME, .SourceForPub = F){
   assertthat::assert_that(is.data.frame(.DF))
-  .DF %>% saveRDS(file.path("output/FigDataRDS/", paste0(.NAME, ".RDS")))
-  .DF %>% readr::write_csv(file = file.path("output/FigDataCSV/", paste0(.NAME, ".csv")))
 
+  if (.SourceForPub == T) {
+    .DF %>% readr::write_csv(file = file.path("output/FigSourceData/", paste0(.NAME, ".csv")))
+  } else {
+    .DF %>% saveRDS(file.path("output/FigDataRDS/", paste0(.NAME, ".RDS")))
+    #.DF %>% readr::write_csv(file = file.path("output/FigDataCSV/", paste0(.NAME, ".csv")))
+  }
 }
+
 
 LoadFigData <- function(.NAME){
   FilePath <- file.path("output/FigDataRDS/", paste0(.NAME, ".RDS"))
