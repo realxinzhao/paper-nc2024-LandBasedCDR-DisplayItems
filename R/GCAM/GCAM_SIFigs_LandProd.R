@@ -35,6 +35,23 @@ SIFigs_LandProd <- function(){
     group_by_at(vars(-year, -value)) %>%
     mutate(value = value - first(value)) %>% ungroup() -> DF_LUC
 
+  # Source data saving ----
+  # DF_LUC %>% group_by_at(vars(-value, -year)) %>%
+  #   Fill_annual() %>%
+  #   summarise(value = mean(value), .groups = "drop") %>%
+  #   mutate(year = "2020-2100") %>%
+  #   bind_rows(
+  #     DF_LUC %>% group_by_at(vars(-value, -year)) %>%
+  #       Fill_annual() %>% filter(year <= 2050) %>%
+  #       summarise(value = mean(value), .groups = "drop") %>%
+  #       mutate(year = "2020-2050")
+  #   ) %>%
+  #   transmute(Policy_Scenario = LandSupply, LCP_scenario = LCT, year, land,
+  #             value, unit = "Mha") %>%
+  #   filter(!grepl("Rock|Urban", land)) %>%
+  #   spread(land, value) %>% arrange(year) %>%
+  #   SaveFigData("TableConnection_Land", .SourceForPub = T)
+
   DF_LUC %>% group_by_at(vars(-value, -year)) %>%
     Fill_annual() %>%
     summarise(value = mean(value) ) %>%
@@ -327,6 +344,88 @@ SIFigs_LandProd <- function(){
 
   A %>% Write_png(paste0(OutFolderName,"/SIFig_GCAM_BalanceChange"), h = 2800, w = 3800,  r = 300)
 
+
+
+
+
+  LoadFigData("FoodCalories") %>% filter(year >= 2020) -> FoodCalories
+
+  FoodCalories %>% filter(year %in% c(2020, 2100,2050)) %>%
+    group_by_at(vars(scenario, year)) %>%
+    summarise(value = weighted.mean(value, w = pop), .groups = "drop") %>%
+    spread(year, value) %>% proc_scen() -> A
+
+  FoodCalories %>% filter(year %in% c(2020, 2100,2050)) %>%
+    group_by_at(vars(scenario, year)) %>%
+    summarise(value = weighted.mean(value, w = pop), .groups = "drop") %>%
+    group_by_at(vars(-scenario, -value)) %>%
+    mutate(value = value - value[scenario == "DB_BioUn_ProtLow_LCT0_FCT0_REF"]) %>%
+    spread(year, value) %>% proc_scen() -> A
+
+  FoodCalories %>% filter(year %in% c(2100)) %>%
+    group_by_at(vars(-scenario, -value, -pop)) %>%
+    mutate(value = value - value[scenario == "DB_BioUn_ProtLow_LCT0_FCT0_REF"]) %>%
+    proc_scen() -> A
+
+  FoodCalories %>% #filter(year %in% c(2050, 2100)) %>%
+    proc_scen() %>% filter(LandSupply != "Reference") %>%
+    ggplot()  + facet_grid(LandSupply ~ region, scales = "fixed") +
+    geom_hline(yintercept = 4000, color = "grey60", linetype = 5) +
+    geom_hline(yintercept = 3000, color = "grey60", linetype = 5) +
+    geom_hline(yintercept = 3500, color = "grey60", linetype = 5) +
+    geom_hline(yintercept = 2500, color = "grey60", linetype = 5) +
+    geom_line(aes(x = year, y = value, group = interaction(scenario, region), color = LCT, linetype = LCT), size = 0.8) +
+    geom_line(data = FoodCalories %>%  #filter(year %in% c(2050, 2100)) %>%
+                proc_scen() %>% filter(LandSupply == "Reference") %>% select(-LandSupply),
+              aes(x = year, y = value, group = interaction(scenario, region)), size = 0.5, color = "black") +
+    scale_x_continuous(expand = c(0, 0), breaks = seq(2030, 2090, 20)) +
+    scale_color_manual(values = mycol) +
+    scale_linetype_manual(values = c(1:3,5)) +
+    labs(x = "Year", y = "kilocalories per capita per day", linetype = "Land mitigation policy",
+         color = "Land mitigation policy") +
+    theme_bw() + theme0 +
+    theme(axis.text.x = element_text(angle = 90),
+          legend.key.width = unit(1,"cm"),
+          panel.grid = element_blank(),
+          panel.spacing.y = unit(0.5, "lines"),
+          panel.spacing.x = unit(0.5, "lines")) -> A2; A2
+
+
+  FoodCalories %>%
+    group_by_at(vars(scenario, year)) %>%
+    summarise(value = weighted.mean(value, w = pop), .groups = "drop") %>%
+    proc_scen() %>% filter(LandSupply != "Reference") %>%
+    ggplot()+ facet_grid( ~LandSupply) +
+    geom_line(aes(x = year, y = value, group = interaction(scenario), color = LCT, linetype = LCT), size = 1) +
+    geom_line(data = FoodCalories %>%
+                group_by_at(vars(scenario, year)) %>%
+                summarise(value = weighted.mean(value, w = pop), .groups = "drop") %>%
+                proc_scen() %>% filter(LandSupply == "Reference") %>% select(-LandSupply),
+              aes(x = year, y = value, group = interaction(scenario)), size = 0.5, color = "black") +
+    scale_x_continuous(expand = c(0, 0), breaks = seq(2030, 2090, 20)) +
+    scale_color_manual(values = mycol) +
+    scale_linetype_manual(values = c(1:3,5)) +
+    labs(x = "Year", y = "kilocalories per capita per day", linetype = "Scenario",
+         color = "Scenario") +
+    theme_bw() + theme0 +
+    theme(axis.text.x = element_text(angle = 90),
+          legend.key.width = unit(1,"cm"),
+          panel.grid = element_blank(),
+          panel.spacing.y = unit(0.5, "lines"),
+          panel.spacing.x = unit(0.5, "lines")) -> A1; A1
+
+  plot_grid(
+    A1 + labs(title = "(A) Dietary energy availability, world") +
+      theme(plot.title = element_text(hjust = 0, face = "bold"),
+            axis.title.x = element_blank(), legend.position = "right"),
+    A2  +  labs(title = "(B) Dietary energy availability by region") +
+      theme(plot.title = element_text(hjust = 0, face = "bold"),legend.position = "none"), ncol = 1,
+    align = c("v"), rel_heights = c(0.5, 1)
+
+  ) -> p
+
+
+  p %>% Write_png(paste0(OutFolderName,"/SIFig_GCAM_FoodCalories_Reg"), h = 5550, w = 5400,  r = 300)
 
 
   }

@@ -169,7 +169,8 @@ MainFig5_LandRemovalEfficiency <-
   CutRange <- EM_AFOLU_BECCS %>% distinct(EM_CO2_2100_cut) %>% pull %>% as.character()
 
   # Land-based BECCS share ----
-  INPUT_DF %>% filter(Var %in% c("Biomass Modern", "Biomass EnergyCrop")) %>%
+  INPUT_DF %>% filter(Var %in% c("Biomass Modern", "Biomass EnergyCrop", "Biomass Modern CCS",
+                                 "Biomass Modern noCCS")) %>%
     filter(year >= 2020) %>%
     group_by_at(vars(-value, -year)) %>%
     mutate(value = cumsum(value)) %>% ungroup() %>%
@@ -303,7 +304,7 @@ MainFig5_LandRemovalEfficiency <-
          fill = expression(paste("AR6 CB ", "(",GtCO[2],")")) ) -> p;p
 
 
-  p + labs(title = "(B) LULUCF efficiency") +
+  p + labs(title = "(B) LULUCF vs. Forest Land") +
     theme(plot.title = element_text(hjust = 0, face = "bold"), legend.position = "none") ->
     B
 
@@ -377,7 +378,7 @@ MainFig5_LandRemovalEfficiency <-
          fill = expression(paste("AR6 CB ", "(",GtCO[2],")")) ) -> p;p
 
 
-  p + labs(title = "(A) Land-based BECCS efficiency") + theme(plot.title = element_text(hjust = 0, face = "bold")) ->
+  p + labs(title = "(A) Land-based BECCS vs. Purpose-grown") + theme(plot.title = element_text(hjust = 0, face = "bold")) ->
     A
 
 A + B +
@@ -385,6 +386,125 @@ A + B +
 
 
 pp %>% Write_png(paste0(OutFolderName, "/MainFig5_LandCDREfficiency_AR6_GCAM"), h = 2000, w = 4400, r = 300)
+
+# **********Updates ------------------
+
+
+
+
+LandUse_EMs_BECCS %>%
+  inner_join(
+    PE_Biomass %>% filter(!is.na(`Biomass Modern CCS`), !is.na(`Biomass Modern noCCS`)) %>%
+      select(Pathway, year, `Biomass Modern CCS`, `Biomass Modern noCCS`), by = c("Pathway", "year")
+  ) %>% mutate(CCS_sector_share = `Biomass Modern CCS` / (`Biomass Modern CCS` + `Biomass Modern noCCS`),
+               CCS_sector_share = pmin(1, CCS_sector_share)) %>%
+  filter(CCS_sector_share > 0) %>%
+  mutate(`Energy cropland` = `Energy cropland` * CCS_sector_share) %>%
+  mutate(BECCSCDR = BECCS_land/`Energy cropland` * 1000) -> LandUse_EMs_BECCS1
+
+#LandUse_EMs_BECCS1 %>% filter(year == 2100) -> A
+
+x_title0 <- "BECCSCDR"
+df1 <- LandUse_EMs_BECCS1 %>% #filter(BECCSCDR <0) %>%
+  group_by(year, EM_CO2_2100_cut) %>%
+  summarise(sd0 = quantile(get(x_title0), probs = 0.05), n = n(),
+            sd25 = quantile(get(x_title0), probs = 0.25),
+            sd05 = quantile(get(x_title0), probs = 0.5),
+            sd75 = quantile(get(x_title0), probs = 0.75),
+            sd100 = quantile(get(x_title0), probs = .95)) %>% ungroup() %>%
+  mutate(year = as.character(year))
+
+df2 <- LandUse_EMs_BECCS1 %>% #filter(BECCSCDR <0) %>%
+  group_by(year) %>%
+  summarise(sd05 = quantile(get(x_title0), probs = 0.5), n = n()) %>%
+  mutate(year = as.character(year))
+
+ggplot(data = df1 %>% mutate(year = as.character(year)) ,
+       aes(x = year)) +
+  guides(shape =guide_legend( order = 1),
+         linetype = guide_legend( order = 2),
+         color = guide_legend(order = 3))+
+  geom_boxplot(aes(ymin = sd0, lower = sd25, middle = sd05, upper = sd75,
+                   ymax = sd100, fill =  EM_CO2_2100_cut, group = interaction(EM_CO2_2100_cut, year)),
+               alpha= .7,  lwd=0.5, fatten = 1, stat = "identity", width = 0.8,
+               position=position_dodge(width= 0.9)) +
+  geom_errorbar(data = df2, aes(ymin = sd05, ymax = sd05), width = 1, color = "blue", linetype = 2) +
+
+  geom_text(data = df1,
+            aes(x = year, y = -79, label = n, group = interaction(EM_CO2_2100_cut, year)),
+            hjust = 0.5, size = 4, color = "blue", fontface = 4, position=position_dodge(width= .9) ) +
+
+  geom_errorbar(aes(ymin = -80, ymax = -80), width = 0.8, color = "blue", linetype = 1) +
+
+  geom_text(data = df2,
+            aes(x = year, y = -81, label = paste0("n = ", n) ),
+            hjust = 0.5, size = 4, color = "blue", fontface = 4 ) +
+
+  #scale_y_continuous(expand = c(0,0), limits = c(-28, 0), breaks = seq(-25, 0, 5))+
+  scale_x_discrete(labels = c("2020 - 2050", "2020 - 2100")) +
+  theme_bw() + theme0 +
+  scale_color_npg()+
+  labs(shape = "Policy scenario \n(This study)", color = "LCP scenario \n(This study)")+
+  scale_shape_manual(values = c(19, 15, 17, 18)) +
+  scale_fill_manual(values = c(ColorViridis4)) +
+  labs(x = "Study period", y = expression(paste(tCO[2]," ", ha^-1," ", yr^-1)) ,
+       fill = expression(paste("AR6 CB ", "(",GtCO[2],")")) ) -> p;p
+
+p + labs(title = "(A) Land-based BECCS vs. Purpose-grown (CCS)") + theme(plot.title = element_text(hjust = 0, face = "bold")) ->
+  pp
+
+pp %>% Write_png(paste0(SIOutFolderName, "/SI_MainFig5_LandCDREfficiency_AR6_CCSLand"), h = 2000, w = 2400, r = 300)
+
+# 12/14/2023 udpate Fig. 5----
+
+
+# Check time series
+c("Biomass Modern CCS",
+  "Biomass Modern noCCS",
+  "Biomass Residues") -> VarBioEnergy
+
+INPUT_DF %>%
+  filter(Var %in% VarBioEnergy) %>%
+  select(-Unit, -Element, -Variable) %>%
+  group_by_at(vars(-year, -value)) %>%
+  mutate(value = cumsum(value)) %>%
+  spread(Var, value) %>%
+  filter(!is.na(`Biomass Modern noCCS`)) %>%
+  group_by(Pathway) %>%
+  filter(min(`Biomass Modern noCCS`) > 0) %>% ungroup() %>%
+  filter(year %in% seq(2020, 2100, 5)) %>%
+  mutate(ModernBiomassCCSRate = `Biomass Modern CCS`/(`Biomass Modern noCCS` + `Biomass Modern CCS`)) %>%
+  mutate(ModernBiomassResidueRate = `Biomass Residues`/(`Biomass Modern noCCS` + `Biomass Modern CCS`)) %>%
+  mutate(`Modern biomass noResidue` = `Biomass Modern noCCS` + `Biomass Modern CCS` -  `Biomass Residues`) ->
+  Biomass
+
+Biomass %>%
+  filter(!is.na(ModernBiomassCCSRate)) %>%
+  ggplot()+ #facet_wrap(~Category) +
+  geom_line(aes(x = year, y = ModernBiomassCCSRate, group = Pathway, color = Model)) +
+  labs(x = "Year", y = "Cumulative CCS Share in modern biomass") +
+  theme_bw() + theme0 -> p;p
+
+p %>% Write_png(paste0(SIOutFolderName, "/SI_MainFig5_LandCDREfficiency_AR6_CCSSectorShare"), h = 2000, w = 3400, r = 300)
+
+
+Biomass %>%
+  filter(!is.na(ModernBiomassCCSRate)) %>% inner_join(LandUse_EMs_BECCS1 %>% distinct(Pathway)) %>%
+  ggplot()+ #facet_wrap(~Category) +
+  geom_line(aes(x = year, y = ModernBiomassCCSRate, group = Pathway, color = Model)) +
+  labs(x = "Year", y = "Cumulative CCS Share in modern biomass") +
+  theme_bw() + theme0 -> p;p
+
+p %>% Write_png(paste0(SIOutFolderName, "/SI_MainFig5_LandCDREfficiency_AR6_CCSSectorShare_subset"), h = 2000, w = 2400, r = 300)
+
+
+
+
+
+
+
+
+## Done ------------------------------
 
 
 
@@ -507,6 +627,9 @@ p + labs(title = "(A) All BECCS") +
 A + B + plot_layout(guides = 'collect') -> pp; pp
 
 pp %>% Write_png(paste0(SIOutFolderName, "/SIFig_LandCDREfficiency_AR6_GCAM"), h = 2000, w = 4400, r = 300)
+
+
+
 
 
 

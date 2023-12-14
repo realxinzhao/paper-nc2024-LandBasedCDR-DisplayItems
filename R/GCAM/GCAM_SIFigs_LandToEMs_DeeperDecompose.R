@@ -85,6 +85,10 @@ LandToEMs %>%
     LandToEMs %>% filter(sector != "Land-based BECCS")
   ) -> LandToEMs
 
+LandToEMs %>% SaveFigData("LandToEMs_DeeperUpdates")
+
+
+
 LandToEMs %>%
   filter(year == 2100) ->
   LandToEMs
@@ -158,10 +162,10 @@ LandToEMsP1 %>%
   mutate(`Land CDR efficiency` =
            factor(`Land CDR efficiency`,
                   levels = c( "NonLand-based BECCS", "Land-based (NonCCS) BECCS", "Land-based (CCS) BECCS",  "LULUCF vs. A/R"),
-                  labels = c("NonLand-based BECCS", "Land-based (NonCCS) BECCS", "Land-based (CCS) BECCS", LULUCF_FOR)))->
+                  labels = c("BECCS: Waste & Residue", "BE-NoCCS: Land (NoCCS)", "BECCS vs. Land (CCS)", LULUCF_FOR)))->
   LandToEMs_decompose
 
-
+LandToEMs_decompose %>% SaveFigData("LandToEMs_decompose_Updated")
 
 ggplot() +
   guides(colour = guide_legend(order = 1),
@@ -186,21 +190,21 @@ ggplot() +
   geom_abline(intercept = 0, slope = -30/ 1000, linetype = 2, color = "grey80") +
   geom_abline(intercept = 0, slope = -35/ 1000, linetype = 2, color = "grey80") +
 
-  geom_text(data = LandToEMsTotal %>% filter(LCT == "100%-LCP"),
+  geom_text(data = LandToEMs_decompose %>% filter(LCT == "100%-LCP"),
             aes(y = -7.5, x = 820, label = "`-10tCO`[2]/ha/yr"), parse = TRUE,
             angle = -40, #atan(-35)/pi * 180 ,
             hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
 
-  geom_text(data = LandToEMsTotal ,
+  geom_text(data = LandToEMs_decompose ,
             aes(y = -9.8, x = 260, label = "-35"), parse = TRUE, hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
-  geom_text(data = LandToEMsTotal ,
+  geom_text(data = LandToEMs_decompose ,
             aes(y = -9.8, x = 400, label = "-25"), parse = TRUE, hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
-  geom_text(data = LandToEMsTotal ,
+  geom_text(data = LandToEMs_decompose ,
             aes(y = -9.8, x = 680, label = "-15"), parse = TRUE, hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
 
 
   geom_text(data = LandToEMs_decompose %>% filter(LCT != "Reference") %>%
-              filter(`Land CDR efficiency` == "Land-based (CCS) BECCS") %>%
+              filter(`Land CDR efficiency` == "BECCS vs. Land (CCS)") %>%
               group_by(LCT, LandSupply) %>%
               summarise(EFF = round((GtCO2 - first(GtCO2)) /(Mha-first(Mha)) * 1000, 1),
                         Mha = mean(Mha), GtCO2 = mean(GtCO2) ) %>% filter(!is.na(EFF)) %>% ungroup() %>%
@@ -220,7 +224,7 @@ ggplot() +
   scale_y_continuous(expand = c(0, 0), limits = c(-10.5, 0.5)) +
   labs(x = expression(paste(Mha)), y = expression(paste(GtCO[2], " ", yr^-1))) +
   scale_color_npg(name = "Scenario", limits = c("No-LCP", "10%-LCP", "50%-LCP", "100%-LCP")) +
-  scale_linetype_manual(values = c(3, 2, 4, 1), name = "Land CDR efficiency") +
+  scale_linetype_manual(values = c(3, 2, 4, 1), name = "Land removal intensity") +
   theme_bw() + theme0 +
   theme(panel.grid = element_blank(),
         axis.text.x = element_text(angle = 40, hjust = 0.9, vjust = 1), legend.text.align = 0,
@@ -228,7 +232,65 @@ ggplot() +
         panel.spacing.y = unit(0.5, "lines"),
         panel.spacing.x = unit(.5, "lines")) + theme_leg -> A3;A3
 
-A3 %>% Write_png(paste0(OutFolderName,"/SIFig_GCAM_LandToEMs_All_bind_Mit_UpdatedV2", LULUCF_FOR), h = 3800, w = 4400,  r = 300)
+#A3 %>% Write_png(paste0(OutFolderName,"/SIFig_GCAM_LandToEMs_All_bind_Mit_UpdatedV2", LULUCF_FOR), h = 3800, w = 4400,  r = 300)
+
+
+LoadFigData("LandToEMsTotal") -> LandToEMsTotal
+
+
+ggplot() +
+  facet_wrap(~LandSupply, nrow = 1) +
+  geom_path(data = LandToEMsTotal %>%
+              bind_rows(
+                LandToEMsTotal %>% mutate(Mha = 0, GtCO2 = 0 )
+              ),
+            aes(x = Mha, y = GtCO2, color = LCT), size = 2, alpha = 0.7 ) +
+  geom_point(data = LandToEMsTotal,
+             aes(x = Mha, y = GtCO2, fill = LCT), size = 2.5, shape = 21) +
+
+  geom_abline(intercept = 0, slope = -10/ 1000, linetype = 2, color = "grey80") +
+  geom_abline(intercept = 0, slope = -15/ 1000, linetype = 2, color = "grey80") +
+  geom_abline(intercept = 0, slope = -20 / 1000, linetype = 2, color = "grey80") +
+  geom_abline(intercept = 0, slope = -25/ 1000, linetype = 2, color = "grey80") +
+  geom_abline(intercept = 0, slope = -30/ 1000, linetype = 2, color = "grey80") +
+  geom_abline(intercept = 0, slope = -35/ 1000, linetype = 2, color = "grey80") +
+
+  geom_text(data = LandToEMsTotal %>% filter(LCT == "100%-LCP"),
+            aes(y = -7.5, x = 820, label = "`-10tCO`[2]/ha/yr"), parse = TRUE,
+            angle = -49, #atan(-35)/pi * 180 ,
+            hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
+  geom_text(data = LandToEMsTotal %>% filter(LCT == "100%-LCP"),
+            aes(y = -9.8, x = 260, label = "-35"), parse = TRUE, hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
+  geom_text(data = LandToEMsTotal %>% filter(LCT == "100%-LCP"),
+            aes(y = -9.8, x = 400, label = "-25"), parse = TRUE, hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
+  geom_text(data = LandToEMsTotal %>% filter(LCT == "100%-LCP"),
+            aes(y = -9.8, x = 680, label = "-15"), parse = TRUE, hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 1100)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(-10.5, 0)) +
+  geom_vline(xintercept = 0) +
+  labs(x = expression(paste(Mha)), y = expression(paste(GtCO[2], " ", yr^-1)),
+       linetype = "Scenario", color = "Scenario", fill = "Scenario") +
+  theme_bw() + theme0 +
+  scale_color_npg(name = "Scenario") +
+  scale_fill_npg(name = "Scenario") +
+
+  theme(panel.grid = element_blank(),
+        axis.text.x = element_text(angle = 40, hjust = 0.9, vjust = 1), legend.text.align = 0,
+        panel.spacing = unit(0.5, "lines")) -> A2;A2
+
+
+(A2 + labs(title = "(A) Land removal intensity: land-based CDR vs. mean land use") +
+    theme(plot.title = element_text(hjust = 0, face = "bold") , legend.position = "none",
+          axis.title.x = element_blank()) ) /
+  (A3  +  labs(title = "(B) Decomposition of land removal intensity") +
+     theme(plot.title = element_text(hjust = 0, face = "bold")) )+
+  plot_layout(heights = c(0.27, 1),guides = 'collect') -> p
+
+
+
+p %>% Write_png(paste0(OutFolderName,"/SIFig_GCAM_LandToEMs_All_bind_Mit_UpdatedV2", LULUCF_FOR), h = 4400, w = 4400,  r = 300)
+
+
 
 # ----- LULUCF vs. Forest & Natural ------
 "LULUCF vs. Forest & Natural" -> LULUCF_FOR
@@ -368,7 +430,7 @@ LandToEMsP1 %>%
   mutate(`Land CDR efficiency` =
            factor(`Land CDR efficiency`,
                   levels = c( "NonLand-based BECCS", "Land-based (NonCCS) BECCS", "Land-based (CCS) BECCS",  "LULUCF vs. A/R"),
-                  labels = c("NonLand-based BECCS", "Land-based (NonCCS) BECCS", "Land-based (CCS) BECCS", LULUCF_FOR)))->
+                  labels = c("BECCS: Waste & Residue", "BE-NonCCS: Land (NonCCS)", "BECCS vs. Land (CCS)", LULUCF_FOR)))->
   LandToEMs_decompose
 
 
@@ -396,21 +458,21 @@ ggplot() +
   geom_abline(intercept = 0, slope = -30/ 1000, linetype = 2, color = "grey80") +
   geom_abline(intercept = 0, slope = -35/ 1000, linetype = 2, color = "grey80") +
 
-  geom_text(data = LandToEMsTotal %>% filter(LCT == "100%-LCP"),
+  geom_text(data = LandToEMs_decompose %>% filter(LCT == "100%-LCP"),
             aes(y = -7.5, x = 820, label = "`-10tCO`[2]/ha/yr"), parse = TRUE,
             angle = -40, #atan(-35)/pi * 180 ,
             hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
 
-  geom_text(data = LandToEMsTotal ,
+  geom_text(data = LandToEMs_decompose ,
             aes(y = -9.8, x = 260, label = "-35"), parse = TRUE, hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
-  geom_text(data = LandToEMsTotal ,
+  geom_text(data = LandToEMs_decompose ,
             aes(y = -9.8, x = 400, label = "-25"), parse = TRUE, hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
-  geom_text(data = LandToEMsTotal ,
+  geom_text(data = LandToEMs_decompose ,
             aes(y = -9.8, x = 680, label = "-15"), parse = TRUE, hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
 
 
   geom_text(data = LandToEMs_decompose %>% filter(LCT != "Reference") %>%
-              filter(`Land CDR efficiency` == "Land-based (CCS) BECCS") %>%
+              filter(`Land CDR efficiency` == "BECCS vs. Land (CCS)") %>%
               group_by(LCT, LandSupply) %>%
               summarise(EFF = round((GtCO2 - first(GtCO2)) /(Mha-first(Mha)) * 1000, 1),
                         Mha = mean(Mha), GtCO2 = mean(GtCO2) ) %>% filter(!is.na(EFF)) %>% ungroup() %>%
@@ -430,7 +492,7 @@ ggplot() +
   scale_y_continuous(expand = c(0, 0), limits = c(-10.5, 0.5)) +
   labs(x = expression(paste(Mha)), y = expression(paste(GtCO[2], " ", yr^-1))) +
   scale_color_npg(name = "Scenario", limits = c("No-LCP", "10%-LCP", "50%-LCP", "100%-LCP")) +
-  scale_linetype_manual(values = c(3, 2, 4, 1), name = "Land CDR efficiency") +
+  scale_linetype_manual(values = c(3, 2, 4, 1), name = "Land removal intensity") +
   theme_bw() + theme0 +
   theme(panel.grid = element_blank(),
         axis.text.x = element_text(angle = 40, hjust = 0.9, vjust = 1), legend.text.align = 0,
@@ -438,7 +500,62 @@ ggplot() +
         panel.spacing.y = unit(0.5, "lines"),
         panel.spacing.x = unit(.5, "lines")) + theme_leg -> A3;A3
 
-A3 %>% Write_png(paste0(OutFolderName,"/SIFig_GCAM_LandToEMs_All_bind_Mit_UpdatedV2", LULUCF_FOR), h = 3800, w = 4400,  r = 300)
+#A3 %>% Write_png(paste0(OutFolderName,"/SIFig_GCAM_LandToEMs_All_bind_Mit_UpdatedV2", LULUCF_FOR), h = 3800, w = 4400,  r = 300)
+
+
+LoadFigData("LandToEMsTotal_ForNat") -> LandToEMsTotal
+
+ggplot() +
+  facet_wrap(~LandSupply, nrow = 1) +
+  geom_path(data = LandToEMsTotal %>%
+              bind_rows(
+                LandToEMsTotal %>% mutate(Mha = 0, GtCO2 = 0 )
+              ),
+            aes(x = Mha, y = GtCO2, color = LCT), size = 2, alpha = 0.7 ) +
+  geom_point(data = LandToEMsTotal,
+             aes(x = Mha, y = GtCO2, fill = LCT), size = 2.5, shape = 21) +
+
+  geom_abline(intercept = 0, slope = -10/ 1000, linetype = 2, color = "grey80") +
+  geom_abline(intercept = 0, slope = -15/ 1000, linetype = 2, color = "grey80") +
+  geom_abline(intercept = 0, slope = -20 / 1000, linetype = 2, color = "grey80") +
+  geom_abline(intercept = 0, slope = -25/ 1000, linetype = 2, color = "grey80") +
+  geom_abline(intercept = 0, slope = -30/ 1000, linetype = 2, color = "grey80") +
+  geom_abline(intercept = 0, slope = -35/ 1000, linetype = 2, color = "grey80") +
+
+  geom_text(data = LandToEMsTotal %>% filter(LCT == "100%-LCP"),
+            aes(y = -7.5, x = 820, label = "`-10tCO`[2]/ha/yr"), parse = TRUE,
+            angle = -49, #atan(-35)/pi * 180 ,
+            hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
+  geom_text(data = LandToEMsTotal %>% filter(LCT == "100%-LCP"),
+            aes(y = -9.8, x = 260, label = "-35"), parse = TRUE, hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
+  geom_text(data = LandToEMsTotal %>% filter(LCT == "100%-LCP"),
+            aes(y = -9.8, x = 400, label = "-25"), parse = TRUE, hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
+  geom_text(data = LandToEMsTotal %>% filter(LCT == "100%-LCP"),
+            aes(y = -9.8, x = 680, label = "-15"), parse = TRUE, hjust = 0.5, size = 3.5, color = "blue", fontface = 1 ) +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 1100)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(-10.5, 0)) +
+  geom_vline(xintercept = 0) +
+  labs(x = expression(paste(Mha)), y = expression(paste(GtCO[2], " ", yr^-1)),
+       linetype = "Scenario", color = "Scenario", fill = "Scenario") +
+  theme_bw() + theme0 +
+  scale_color_npg(name = "Scenario") +
+  scale_fill_npg(name = "Scenario") +
+
+  theme(panel.grid = element_blank(),
+        axis.text.x = element_text(angle = 40, hjust = 0.9, vjust = 1), legend.text.align = 0,
+        panel.spacing = unit(0.5, "lines")) -> A2;A2
+
+
+(A2 + labs(title = "(A) Land removal intensity: land-based CDR vs. mean land use") +
+    theme(plot.title = element_text(hjust = 0, face = "bold") , legend.position = "none",
+          axis.title.x = element_blank()) ) /
+  (A3  +  labs(title = "(B) Decomposition of land removal intensity") +
+     theme(plot.title = element_text(hjust = 0, face = "bold")) )+
+  plot_layout(heights = c(0.27, 1),guides = 'collect') -> p
+
+
+
+p %>% Write_png(paste0(OutFolderName,"/SIFig_GCAM_LandToEMs_All_bind_Mit_UpdatedV2", LULUCF_FOR), h = 4400, w = 4400,  r = 300)
 
 
 }

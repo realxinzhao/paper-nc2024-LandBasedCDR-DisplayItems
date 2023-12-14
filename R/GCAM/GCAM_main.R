@@ -28,19 +28,25 @@ outdir <- "output/GCAM/"
 source("R/GCAM/GCAM_MainFig2_CarbonPrices.R")
 MainFig2_CarbonPrices()
 
-source("R/GCAM/GCAM_MainFig3_LandCarbonPricingStrength.R")
-MainFig3_LandCarbonPricingStrength()
+# source("R/GCAM/GCAM_MainFig3_LandCarbonPricingStrength.R")
+# MainFig3_LandCarbonPricingStrength()
 
-source("R/GCAM/GCAM_MainFig4_PolicyScope.R")
-MainFig4_PolicyScope()
+source("R/GCAM/GCAM_MainFig3_LandCarbonPricingStrength_Updated.R")
+MainFig3_LandCarbonPricingStrength_Updated()
+
+# source("R/GCAM/GCAM_MainFig4_PolicyScope.R")
+# MainFig4_PolicyScope()
+
+source("R/GCAM/GCAM_MainFig4_PolicyScope_Updated.R")
+MainFig4_PolicyScope_Updated()
 
 source("R/GCAM/GCAM_MainFig6_AgPriceImplication.R")
 MainFig6_AgPriceImplication()
 
 
 
-source("R/GCAM/GCAM_SIFigs_LandToEMs.R")
-SIFigs_LandToEMs()
+#source("R/GCAM/GCAM_SIFigs_LandToEMs.R")
+#SIFigs_LandToEMs()
 
 source("R/GCAM/GCAM_SIFigs_LandToEMs_DeeperDecompose.R")
 SIFigs_LandToEMs_DeeperDecompose()

@@ -363,7 +363,7 @@ MainFig4_PolicyScope <- function(){
 
   # Fig. F ----
   LandToEMs_decompose <- LoadFigData("LandToEMs_decompose") %>%  filter(LCT %in% c("100%-LCP"))
-  LandToEMs_decomposePoint <- LoadFigData("LandToEMs_decomposePoint") %>%  filter(LCT %in% c("100%-LCP"))
+  #LandToEMs_decomposePoint <- LoadFigData("LandToEMs_decomposePoint") %>%  filter(LCT %in% c("100%-LCP"))
 
 
   #"LULUCF vs. Forest & Natural" -> LULUCF_FOR
@@ -474,11 +474,11 @@ MainFig4_PolicyScope <- function(){
             rel_widths = c(0.27, 0.75, 0.18),
             align = c('hv'), axis = "tb") -> FigEF0
 
-  ggdraw() + draw_label("(E) Land CDR efficiency", size = 30,
+  ggdraw() + draw_label("(E) Land mitigation intensity", size = 30,
                         fontface = 'bold', x = 0, hjust = 0) +
     theme(plot.margin = margin(t=5, b=10, l = 20)) -> FigE1Title
 
-  ggdraw() + draw_label("(F) Decomposition of land CDR efficiency", size = 30,
+  ggdraw() + draw_label("(F) Decomposition of land mitigation intensity", size = 30,
                         fontface = 'bold', x = 0, hjust = 0) +
     theme(plot.margin = margin(t=5, b=10, l = 10)) -> FigF1Title
 

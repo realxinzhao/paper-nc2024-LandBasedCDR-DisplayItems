@@ -163,7 +163,7 @@ NonCO2Check %>% filter(sector != "Other GHGs_UnMGMTLand") %>%
                                expression(paste(CH[4], " Unmanaged Land")),
                                expression(paste(N[2], "O Agriculture")),
                                expression(paste(N[2], "O Energy")),
-                               expression(paste(CH[4], " Unmanaged Land")),
+                               expression(paste(N[2], "O Unmanaged Land")),
                                "Other GHGs")
   ) +
   theme_bw() + theme0 +
@@ -205,7 +205,7 @@ NonCO2Check %>% filter(sector != "Other GHGs_UnMGMTLand") %>%
                                expression(paste(CH[4], " Unmanaged Land")),
                                expression(paste(N[2], "O Agriculture")),
                                expression(paste(N[2], "O Energy")),
-                               expression(paste(CH[4], " Unmanaged Land")),
+                               expression(paste(N[2], "O Unmanaged Land")),
                                "Other GHGs")
   ) +
   theme_bw() + theme0 +

@@ -91,7 +91,7 @@ MainFig3_LandCarbonPricingStrength <- function(){
 
 
   LandToEMs_decompose <- LoadFigData("LandToEMs_decompose")
-  LandToEMs_decomposePoint <- LoadFigData("LandToEMs_decomposePoint")
+  #LandToEMs_decomposePoint <- LoadFigData("LandToEMs_decomposePoint")
 
   LandToEMs_decompose  %>%
     transmute(Policy_Scenario = LandSupply, LCP_scenario = LCT, `Land CDR efficiency`,
@@ -99,11 +99,11 @@ MainFig3_LandCarbonPricingStrength <- function(){
     arrange(Point) %>%
     SaveFigData("Figs3n4PanelF_Line", .SourceForPub = T)
 
-  LandToEMs_decomposePoint %>%
-    transmute(Policy_Scenario = LandSupply, LCP_scenario = LCT, `Land CDR efficiency`,
-              Point = Arrow, Cum_Land_Mha = Mha, Cum_CDR_GtCO2PerYr = GtCO2) %>%
-    arrange(Point) %>%
-    SaveFigData("Figs3n4PanelF_Point", .SourceForPub = T)
+  # LandToEMs_decomposePoint %>%
+  #   transmute(Policy_Scenario = LandSupply, LCP_scenario = LCT, `Land CDR efficiency`,
+  #             Point = Arrow, Cum_Land_Mha = Mha, Cum_CDR_GtCO2PerYr = GtCO2) %>%
+  #   arrange(Point) %>%
+  #   SaveFigData("Figs3n4PanelF_Point", .SourceForPub = T)
 
 
     #FigA & B----
@@ -465,7 +465,7 @@ MainFig3_LandCarbonPricingStrength <- function(){
 
     # Fig. F ----
     LandToEMs_decompose <- LoadFigData("LandToEMs_decompose") %>%  filter(LandSupply == "2C Main")
-    LandToEMs_decomposePoint <- LoadFigData("LandToEMs_decomposePoint") %>%  filter(LandSupply == "2C Main")
+    #LandToEMs_decomposePoint <- LoadFigData("LandToEMs_decomposePoint") %>%  filter(LandSupply == "2C Main")
 
 
     #"LULUCF vs. Forest & Natural" -> LULUCF_FOR
@@ -570,11 +570,11 @@ MainFig3_LandCarbonPricingStrength <- function(){
               rel_widths = c(0.27, 0.75, 0.18),
               align = c('hv'), axis = "tb") -> FigEF0
 
-    ggdraw() + draw_label("(E) Land CDR efficiency", size = 30,
+    ggdraw() + draw_label("(E) Land mitigation intensity", size = 30,
                           fontface = 'bold', x = 0, hjust = 0) +
       theme(plot.margin = margin(t=5, b=10, l = 20)) -> FigE1Title
 
-    ggdraw() + draw_label("(F) Decomposition of land CDR efficiency", size = 30,
+    ggdraw() + draw_label("(F) Decomposition of land mitigation intensity", size = 30,
                           fontface = 'bold', x = 0, hjust = 0) +
       theme(plot.margin = margin(t=5, b=10, l = 10)) -> FigF1Title
 

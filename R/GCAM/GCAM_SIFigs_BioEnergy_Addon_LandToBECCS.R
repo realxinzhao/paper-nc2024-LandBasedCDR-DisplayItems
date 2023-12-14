@@ -7,17 +7,20 @@ SIFigs_BioEnergy_addon_LandToBECCS <- function(){
 
   LoadFigData("BiomassALL_PrimaryEnergyBal") -> BiomassALL
 
-  # Calcualte import share which will be applied to international supply share
+  # Calculate import share which will be applied to international supply share
   BiomassALL %>%
     group_by_at(vars(scenario, DS, region, year)) %>%
     summarize(value = sum(value)) %>%
     spread(DS, value) %>%
     mutate(importshare = (demand - supply ) / demand,
-           importshare = pmax(0, importshare)) %>%
-    select(scenario, region, year, importshare) ->
+           importshare = pmax(0, importshare),
+           exportshare = (supply - demand ) / supply,
+           exportshare = pmax(0, exportshare)
+           ) %>%
+    select(scenario, region, year, importshare, exportshare) ->
     BiomassImportShare
 
-  # Calcualte supply share by source for both region (R10) and world
+  # Calculate supply share by source for both region (R10) and world
   BiomassALL %>%
     filter(DS == "supply") %>%
     group_by(scenario, region, year) %>%
@@ -26,9 +29,12 @@ SIFigs_BioEnergy_addon_LandToBECCS <- function(){
     transmute(scenario, supplysector = sector, region, year, supplyshareReg) %>%
     left_join(
       BiomassALL %>%
+        filter(DS == "supply") %>%
+        # world share is an aggregation of export
+        left_join_error_no_match(BiomassImportShare %>% select(scenario, region, year, exportshare) ) %>%
+        mutate(value = value * exportshare) %>% select(-exportshare) %>%
         group_by_at(vars(-region, -value)) %>%
         summarize(value = sum(value))  %>% ungroup() %>%
-        filter(DS == "supply") %>%
         group_by(scenario,  year) %>%
         mutate(supplyshareWorld = value /sum(value)) %>%
         replace_na(list(supplyshareWorld = 0)) %>% ungroup() %>%
@@ -37,10 +43,11 @@ SIFigs_BioEnergy_addon_LandToBECCS <- function(){
     ) -> BiomassSupplyShare
 
 
+
   # Apply sharing
   BiomassALL %>%
     filter(DS == "demand") %>%
-    left_join_error_no_match(BiomassImportShare, by = c("scenario", "region", "year")) %>%
+    left_join_error_no_match(BiomassImportShare %>% select(-exportshare), by = c("scenario", "region", "year")) %>%
     mutate(domesticshare = 1-importshare) %>%
     left_join(BiomassSupplyShare, by = c("scenario", "region", "year")) %>%
     mutate(value = value * domesticshare * supplyshareReg + value * importshare * supplyshareWorld) %>%
@@ -90,6 +97,7 @@ SIFigs_BioEnergy_addon_LandToBECCS <- function(){
   )-> BiomassALL_CCSShare_Sector
 
 
+
   BiomassALL_SupplyToDemand %>%
     mutate(value = value / 1000) %>%
     Agg_reg(demandsector, supplysector, CCS) %>%
@@ -134,6 +142,14 @@ SIFigs_BioEnergy_addon_LandToBECCS <- function(){
   A2 %>% Write_png(paste0(OutFolderName,"/SIFig_GCAM_PrimaryBiomassCCS_bySupply"), h = 4000, w = 4400,  r = 300)
 
   BiomassALL_SupplyToDemand %>% SaveFigData("BiomassALL_SupplyToDemand_Mapped")
+
+
+  # assert consistency
+  BiomassALL_SupplyToDemand %>% filter(grepl("Residue", supplysector), year == 2100) %>%
+    Agg_reg()
+  BiomassALL %>%  filter(grepl("Residue", sector), year == 2100) %>%
+    Agg_reg()
+
 
 
 }
