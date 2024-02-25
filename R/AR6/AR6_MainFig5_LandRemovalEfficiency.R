@@ -386,6 +386,7 @@ A + B +
 
 
 pp %>% Write_png(paste0(OutFolderName, "/MainFig5_LandCDREfficiency_AR6_GCAM"), h = 2000, w = 4400, r = 300)
+pp %>% Write_pdf(paste0(OutFolderName, "/MainFig5_LandCDREfficiency_AR6_GCAM"), h = 2000, w = 4400, r = 300)
 
 # **********Updates ------------------
 

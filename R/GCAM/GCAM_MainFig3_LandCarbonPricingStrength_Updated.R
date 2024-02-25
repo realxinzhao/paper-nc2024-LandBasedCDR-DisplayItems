@@ -600,6 +600,7 @@ MainFig3_LandCarbonPricingStrength_Updated <- function(){
 
 
   FigABCDEF %>% Write_png(paste0(OutFolderName, "/MainFig3_LandCarbonPricingStrength"), h = 8000, w = 9000,  r = 300)
+  FigABCDEF %>% Write_pdf(paste0(OutFolderName, "/MainFig3_LandCarbonPricingStrength"), h = 8000, w = 9000,  r = 300)
 
 
   # Done

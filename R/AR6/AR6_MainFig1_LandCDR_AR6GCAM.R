@@ -346,8 +346,11 @@ LUC_vs_FFI +
 
   if (ADD_GCAM == T) {
     p3 %>% Write_png(paste0(OutFolderName, "/MainFig1_BECCS_LULUCF_EIP_AR6_GCAM"), h = 4300, w = 9600, r = 600)
+    p3 %>% Write_pdf(paste0(OutFolderName, "/MainFig1_BECCS_LULUCF_EIP_AR6_GCAM"), h = 4300, w = 9600, r = 600)
     }else{
-    p3 %>% Write_png(paste0(OutFolderName, "/MainFgi1_BECCS_LULUCF_EIP_AR6"), h = 4300, w = 9600, r = 600)
+    p3 %>% Write_png(paste0(OutFolderName, "/MainFig1_BECCS_LULUCF_EIP_AR6"), h = 4300, w = 9600, r = 600)
+    p3 %>% Write_pdf(paste0(OutFolderName, "/MainFig1_BECCS_LULUCF_EIP_AR6"), h = 4300, w = 9600, r = 600)
+    p3 %>% Write_svg(paste0(OutFolderName, "/MainFig1_BECCS_LULUCF_EIP_AR6"), h = 4300, w = 9600, r = 600)
   }
 
 }

@@ -500,7 +500,7 @@ MainFig4_PolicyScope_Updated <- function(){
 
 
   FigABCDEF %>% Write_png(paste0(OutFolderName, "/MainFig4_PolicyScope"), h = 8000, w = 9000,  r = 300)
-
+  FigABCDEF %>% Write_pdf(paste0(OutFolderName, "/MainFig4_PolicyScope"), h = 8000, w = 9000,  r = 300)
 
 
 }

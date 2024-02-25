@@ -725,7 +725,7 @@ MainFig6_AgPriceImplication <- function(){
 
 
  p %>% Write_png(paste0(OutFolderName, "/MainFig6_AgPriceImplication"), h = 3600, w = 5000,  r = 300)
-
+ p %>% Write_pdf(paste0(OutFolderName, "/MainFig6_AgPriceImplication"), h = 3600, w = 5000,  r = 300)
 
 
 

@@ -2,6 +2,22 @@ Write_png <- function(.plot, name, w = 9000, h = 4500, r = 600){
   png(file.path(outdir, paste0(name,".png")), width = w, height = h, res = r)
   print(.plot)
   dev.off()
+
+  svg(file = file.path(outdir, paste0(name,".svg")), width = w/r, height = h/r)
+  print(.plot)
+  dev.off()
+}
+
+Write_pdf <- function(.plot, name, w = 9000, h = 4500, r = 600){
+  pdf(file = file.path(outdir, paste0(name,".pdf")), width = w/r, height = h/r)
+  print(.plot)
+  dev.off()
+}
+
+Write_svg <- function(.plot, name, w = 9000, h = 4500, r = 600){
+  svg(file = file.path(outdir, paste0(name,".svg")), width = w/r, height = h/r)
+  print(.plot)
+  dev.off()
 }
 
 

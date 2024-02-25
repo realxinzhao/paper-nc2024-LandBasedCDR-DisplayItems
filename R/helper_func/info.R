@@ -51,6 +51,7 @@ gridcol_val1 <- as.character(unlist(as.list(read.csv("./data/maps/gridcol_val1.c
 
 
 fontfamily = "Arial"
+fontfamily = "sans"
 windowsFonts("Arial" = windowsFont("Arial"))
 
 theme0 <- theme(

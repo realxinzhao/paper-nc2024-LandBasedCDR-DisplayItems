@@ -168,7 +168,8 @@ MainFig2_CarbonPrices <- function(){
                position=position_dodge(width= .7)
                ) +
     scale_shape_manual(values = c(1, 0, 2, 10)) +
-    scale_fill_npg() + scale_color_npg() +
+    scale_color_npg() +
+    #scale_color_brewer(palette = "Set1") +
     scale_y_continuous(expand = c(0,0), limits = c(-30, 1500)) +
     labs(x = "Year", fill = "LCP scenario",
          shape = "Policy scenario\n(Panel A)", color = "LCP scenario\n(Panel A)",
@@ -191,6 +192,17 @@ MainFig2_CarbonPrices <- function(){
 
     # Export ----
   p %>% Write_png(paste0(OutFolderName, "/MainFig2_CarbonPrices"), h = 2000, w = 5000,  r = 300)
+
+
+    # pdf with sans font
+  (GCAM_CP  +  labs(title = "(A) GCAM shadow price of carbon by sector and scenario") +
+      theme(text = element_text(family = "sans"), plot.title = element_text(hjust = 0, face = "bold")) )+
+  (AR6_CP + labs(title = "(B) AR6 carbon prices") +
+      theme(text = element_text(family = "sans"), plot.title = element_text(hjust = 0, face = "bold") ) ) +
+  plot_layout(widths = c(1, 0.35),guides = 'collect') -> p
+
+  p %>% Write_pdf(paste0(OutFolderName, "/MainFig2_CarbonPrices"),  h = 2000, w = 5000,  r = 300)
+
 
 
   # Save source data ----
